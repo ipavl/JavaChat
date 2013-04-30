@@ -15,7 +15,6 @@ public class ServerCommandHandler {
 		((ClientThread) Server.ClientThread.currentThread()).writeMsg(msg + "\n");
 	}
 	
-	//@SuppressWarnings("deprecation")	// I'm sorry :( TODO: Make un-sorry
 	public static void processCommand(String username, String command) {
 		try {
 			Server.display(username + " issued command: " + command);

@@ -2,9 +2,12 @@ package org.pavlinic.chat.client;
 
 import javax.swing.*;
 
+import org.pavlinic.chat.AeSimpleSHA1;
 import org.pavlinic.chat.PacketHandler;
 
 import java.awt.event.*;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 /*
@@ -13,6 +16,8 @@ import java.util.Random;
 public class ClientGUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
+	
+    final JFrame frame = new JFrame("JDialog Demo");
 	// if it is for connection
 	private boolean connected;
 	// the Client object
@@ -36,6 +41,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 	Random r = new Random();
 	int randint = r.nextInt(50);
 	String username = "Guest" + randint;
+	String password = null;
 
 	// Constructor connection receiving a socket number
 	ClientGUI(String host, int port) {
@@ -87,15 +93,33 @@ public class ClientGUI extends JFrame implements ActionListener {
 		getContentPane().add(btnUserlist);
 		
 		txtMessage = new JTextField();
-		txtMessage.setText("Type your desired username here and press enter.");
+		txtMessage.setText("Click here to set your login credentials.");
 		txtMessage.setBounds(0, 423, 584, 29);
 		txtMessage.setColumns(10);
-		txtMessage.addMouseListener(new MouseAdapter() {	// clear textbox before entering name
+		txtMessage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(!connected && e.getButton() == MouseEvent.BUTTON1) {
-					txtMessage.setText("");
-				}
+                    // Open login window
+				    LoginDialog loginDlg = new LoginDialog(frame);
+                    loginDlg.setVisible(true);
+                    
+                    // Get username from login dialog
+                    if (loginDlg.getUsername().length() != 0) {
+                        username = loginDlg.getUsername();
+                        // Get and hash password from login dialog
+                        try {
+                            password = AeSimpleSHA1.SHA1(loginDlg.getPassword());
+                        } catch (NoSuchAlgorithmException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        } catch (UnsupportedEncodingException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                        append("Set username to: " + username + "\n");
+                    }
+                }
 			}
 		});
 		txtMessage.addKeyListener(new KeyAdapter() {	// set username when not connected
@@ -157,18 +181,22 @@ public class ClientGUI extends JFrame implements ActionListener {
 		/*Random r = new Random();
 		int randint = r.nextInt(50);
 		String username = "Guest" + randint;*/
+	    
 		// empty username ignore it
 		if(username.length() == 0)
 			return;
+		
 		// empty serverAddress ignore it
 		String server = txtServer.getText().trim();
 		if(server.length() == 0)
 			return;
+		
 		// empty or invalid port number, ignore it
 		String portNumber = txtPort.getText().trim();
 		if(portNumber.length() == 0)
 			return;
 		int port = 0;
+		
 		try {
 			port = Integer.parseInt(portNumber);
 		}
@@ -177,7 +205,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 		}
 
 		// try creating a new Client with GUI
-		client = new Client(server, port, username, this);
+		client = new Client(server, port, username, password, this);
 		// test if we can start the Client
 		if(!client.start()) 
 			return;

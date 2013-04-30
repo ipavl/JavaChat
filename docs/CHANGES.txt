@@ -21,6 +21,9 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[10:26AM 4/30/2013]
+	- fixed memory leaks with a few unclosed objects
+	- refactored some variable names
 [10:16PM 4/29/2013]
 	- refactored into org.pavlinic.chat.server for server-specific features
 [8:58PM 8/4/2012]: v0.4-alpha

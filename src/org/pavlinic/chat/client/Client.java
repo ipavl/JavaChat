@@ -2,8 +2,10 @@ package org.pavlinic.chat.client;
 
 import java.net.*;
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+import org.pavlinic.chat.AeSimpleSHA1;
 import org.pavlinic.chat.PacketHandler;
 
 /*
@@ -20,7 +22,7 @@ public class Client  {
 	private ClientGUI isGUI;
 	
 	// the server, the port and the username
-	private String server, username;
+	private String server, username, password;
 	private int port;
 	private boolean validUsername;	// verifies that the chosen username is okay
 
@@ -30,20 +32,21 @@ public class Client  {
 	 *  port: the port number
 	 *  username: the username
 	 */
-	Client(String server, int port, String username) {
+	Client(String server, int port, String username, String password) {
 		// which calls the common constructor with the GUI set to null
-		this(server, port, username, null);
+		this(server, port, username, password, null);
 	}
 	
 	/*
 	 * Constructor call when used from a GUI
 	 * in console mode the ClientGUI parameter is null
 	 */
-	Client(String server, int port, String username, ClientGUI isGUI) {
+	Client(String server, int port, String username, String password, ClientGUI isGUI) {
 		// save if we are in GUI mode or not
 		this.isGUI = isGUI;
 		this.server = server;
 		this.port = port;
+		this.setPassword(password);
 		// List of disallowed characters
 		//String[] illegalChars = {"@", "%", "+","#"};
 		
@@ -197,9 +200,22 @@ public class Client  {
 		Random r = new Random();
 		int randint = r.nextInt(50);
 		String userName = "Guest" + randint;
-
+		String password = null;
+		
 		// depending of the number of arguments provided we fall through
 		switch(args.length) {
+            // > javac Client username portNumber serverAddr password
+            case 4:
+                try {
+                    // Hash the password
+                    password = AeSimpleSHA1.SHA1(args[3]);
+                } catch (NoSuchAlgorithmException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (UnsupportedEncodingException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
 			// > javac Client username portNumber serverAddr
 			case 3:
 				serverAddress = args[2];
@@ -221,11 +237,11 @@ public class Client  {
 				break;
 			// invalid number of arguments
 			default:
-				System.out.println("Usage is: > java Client [username] [portNumber] {serverAddress]");
+				System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress] [password]");
 			return;
 		}
 		// create the Client object
-		Client client = new Client(serverAddress, portNumber, userName);
+		Client client = new Client(serverAddress, portNumber, userName, password);
 		// test if we can start the connection to the Server
 		// if it failed nothing we can do
 		if(!client.start())
@@ -289,7 +305,15 @@ public class Client  {
 		System.out.println("For server commands, try typing /help instead.");
 	}
 	
-	/*
+	public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /*
 	 * a class that waits for the message from the server and append them to the JTextArea
 	 * if we have a GUI or simply System.out.println() it in console mode
 	 */
