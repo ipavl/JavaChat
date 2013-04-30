@@ -1,2 +1,2 @@
 @ECHO OFF
-java org.pavlinic.chat.ClientGUI
+java org.pavlinic.chat.client.ClientGUI
