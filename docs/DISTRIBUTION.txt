@@ -7,6 +7,7 @@ The following files are "client" files and should be distributed to any users (e
 	- Run Client (GUI).bat
 \org\pavlinic\chat
 	- ChatMessage.class
+\org\pavlinic\chat\client
 	- Client$ListenFromServer.class
 	- Client.class
 	- ClientGUI$1.class
@@ -22,6 +23,7 @@ The following files are "server" files and are required to all be on the compute
 	- Run Server (GUI).bat
 \org\pavlinic\chat
 	- ChatMessage.class
+\org\pavlinic\chat\server
 	- Server$ClientThread.class
 	- Server.class
 	- ServerBot.class
@@ -39,4 +41,4 @@ NOTES
 * If server commands are not desired, you MAY be able to exclude ServerCommandHandler.class, but this may result in undesired effects when a user attempts to use a command as the "command" is still trying to be passed to that file.
 * The same applies to permissions, but some commands will try and reference ServerPermissionsHandler.class so that may also cause issues if removed.
 
-Last updated: 8:16 PM 7/29/2012
+Last updated: 10:18 PM 4/29/2012
