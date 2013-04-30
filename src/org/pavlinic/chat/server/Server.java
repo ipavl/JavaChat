@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.pavlinic.chat.AeSimpleSHA1;
-import org.pavlinic.chat.ChatMessage;
+import org.pavlinic.chat.PacketHandler;
 
 /*
  * The server that can be run both as a console and GUI application
@@ -242,7 +242,7 @@ public class Server {
 		// the username of the Client
 		String username;
 		// the only type of message a will receive
-		ChatMessage cm;
+		PacketHandler cm;
 		// the connection date
 		String date;
 		// user is identified
@@ -331,7 +331,7 @@ public class Server {
 				while(isServerRunning) {
 					// read a String (which is an object)
 					try {
-						cm = (ChatMessage) sInput.readObject();
+						cm = (PacketHandler) sInput.readObject();
 					}
 					catch (IOException e) {
 						//display(username + " caused exception reading streams: " + e);
@@ -347,7 +347,7 @@ public class Server {
 					// Switch on the type of message receive
 					switch(cm.getType()) {
 	
-					case ChatMessage.MESSAGE:
+					case PacketHandler.MESSAGE:
 						if (!ServerPermissionsHandler.isBanned(username)) {		// ignore banned users
 							if (message.equalsIgnoreCase("/version"))
 								writeMsg("This server is running Womchat " + sVersion + 
@@ -374,12 +374,12 @@ public class Server {
 						else
 							display(username + " tried sending message/command while banned: " + message);
 						break;
-					case ChatMessage.LOGOUT:
+					case PacketHandler.LOGOUT:
 						//display(username + " disconnected with a LOGOUT message.");
 						broadcast(username + " disconnected (LOGOUT).");
 						isServerRunning = false;
 						break;
-					case ChatMessage.WHOISIN:
+					case PacketHandler.LISTUSERS:
 						writeMsg("List of the users connected at " + sdf.format(new Date()) + ":\n");
 						// scan all the users connected
 						for(int i = 0; i < al.size(); ++i) {

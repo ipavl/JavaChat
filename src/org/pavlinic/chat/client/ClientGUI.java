@@ -2,7 +2,7 @@ package org.pavlinic.chat.client;
 
 import javax.swing.*;
 
-import org.pavlinic.chat.ChatMessage;
+import org.pavlinic.chat.PacketHandler;
 
 import java.awt.event.*;
 import java.util.Random;
@@ -205,13 +205,13 @@ public class ClientGUI extends JFrame implements ActionListener {
 		
 		// if it is the disconnect button
 		if(o == btnDisconnect) {
-			client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
+			client.sendMessage(new PacketHandler(PacketHandler.LOGOUT, ""));
 			return;
 		}
 		
 		// if it the userlist button
 		if(o == btnUserlist) {
-			client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));
+			client.sendMessage(new PacketHandler(PacketHandler.LISTUSERS, ""));
 			return;
 		}		
 		
@@ -228,7 +228,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 			if(msg.length() == 0)
 				return;
 			// just have to send the message
-			client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, txtMessage.getText()));				
+			client.sendMessage(new PacketHandler(PacketHandler.MESSAGE, txtMessage.getText()));				
 			txtMessage.setText("");
 			txtMessage.requestFocus();
 			return;

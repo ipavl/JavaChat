@@ -4,7 +4,6 @@ CHANGELOG
 CLIENT
 [10:15PM 4/29/2013]
 	- refactored into org.pavlinic.chat.client for client-specific features
-
 [7:43PM 7/29/2012]
 	- temporarily changed client-side username check to if statement (double ':s')
 	- client will reject usernames longer than 16 characters

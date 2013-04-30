@@ -4,7 +4,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import org.pavlinic.chat.ChatMessage;
+import org.pavlinic.chat.PacketHandler;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -132,7 +132,7 @@ public class Client  {
 	 */
 	private void display(String msg) {
 		if(isGUI == null)
-			System.out.println(msg);      // println in console mode
+			System.out.println(msg);        // println in console mode
 		else
 			isGUI.append(msg + "\n");		// append to the ClientGUI JTextArea (or whatever)
 	}
@@ -140,7 +140,7 @@ public class Client  {
 	/*
 	 * To send a message to the server
 	 */
-	void sendMessage(ChatMessage msg) {
+	void sendMessage(PacketHandler msg) {
 		try {
 			sOutput.writeObject(msg);
 		}
@@ -244,12 +244,12 @@ public class Client  {
 				listCommands();
 			}
 			else if (msg.equalsIgnoreCase("/logout")) {	// logout
-				client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
+				client.sendMessage(new PacketHandler(PacketHandler.LOGOUT, ""));
 				// break out of loop to do the disconnect
 				break;
 			}
 			else if (msg.equalsIgnoreCase("/whoisin") || msg.equalsIgnoreCase("/userlist")) {	// list users
-				client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));				
+				client.sendMessage(new PacketHandler(PacketHandler.LISTUSERS, ""));				
 			}
 			else if (msg.equalsIgnoreCase("/quit")) {
 				System.exit(0);
@@ -258,7 +258,7 @@ public class Client  {
 				// we don't want the client to be able to send blank messages so do nothing
 			}
 			else {	// default to ordinary message
-				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
+				client.sendMessage(new PacketHandler(PacketHandler.MESSAGE, msg));
 			}
 		}
 		// disconnect
