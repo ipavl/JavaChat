@@ -18,7 +18,7 @@ public class LoginDialog extends JDialog {
     private JLabel lbPassword;
  
     public LoginDialog(Frame parent) {
-        super(parent, "Login", true);
+        super(parent, "Login Credentials", true);
         setAlwaysOnTop(true);
         GridBagLayout gbl_panel = new GridBagLayout();
         gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0};
@@ -26,14 +26,14 @@ public class LoginDialog extends JDialog {
  
         panel.setBorder(new LineBorder(Color.GRAY));
  
-        btnLogin = new JButton("Login");
+        btnLogin = new JButton("Save");
  
         btnLogin.addActionListener(new ActionListener() {
  
             // Okay button
             public void actionPerformed(ActionEvent e) {
                 if(getUsername().length() == 0)
-                    JOptionPane.showMessageDialog(LoginDialog.this, "You must enter a username.", "Login", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(LoginDialog.this, "You must enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
                 else
                     setVisible(false);
             }

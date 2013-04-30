@@ -2,6 +2,9 @@ CHANGELOG
 =========
 
 CLIENT
+[2:15PM 4/30/2013]
+	- added authentication support to client
+	- added login credentials dialog window to client GUI
 [10:15PM 4/29/2013]
 	- refactored into org.pavlinic.chat.client for client-specific features
 [7:43PM 7/29/2012]

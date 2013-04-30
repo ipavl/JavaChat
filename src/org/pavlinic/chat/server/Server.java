@@ -5,7 +5,6 @@ import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.pavlinic.chat.AeSimpleSHA1;
 import org.pavlinic.chat.PacketHandler;
 
 /*
@@ -28,9 +27,6 @@ public class Server {
 	public static boolean isServerRunning;
 	// the boolean that will check to see if the chat is mode +m
 	public static boolean isRoomModerated = false;
-	
-	//dateFormatNoTime = new SimpleDateFormat("yyyy-MMM-dd");
-	//Date dateNoTime = dateFormatNoTime.parse(dateFormatNoTime.format(new Date()));
 	
 	/*
 	 * To log server events to file.
@@ -102,9 +98,9 @@ public class Server {
 				// if I was asked to stop
 				if(!isServerRunning)
 					break;
-				ClientThread t = new ClientThread(socket);  // make a thread of it
-				clientList.add(t);									// save it in the ArrayList
-				t.start();
+				ClientThread thread = new ClientThread(socket);  // make a thread of it
+				clientList.add(thread);									// save it in the ArrayList
+				thread.start();
 			}
 			// Server was asked to stop
 			try {
@@ -241,10 +237,12 @@ public class Server {
 		int id;
 		// the username of the Client
 		String username;
+		// the password from the client
+		String password;
 		// the only type of message a will receive
 		PacketHandler packet;
 		// the connection date
-		String date;
+		String logonDate;
 		// user is identified
         boolean isRegistered = false;
 		boolean isIdentified = false;
@@ -263,6 +261,7 @@ public class Server {
 				sInput  = new ObjectInputStream(socket.getInputStream());
 				// read the username
 				username = (String) sInput.readObject();
+				password = (String) sInput.readObject();
 				// set the thread's name equal to the user's (easier to interact with)
 				this.setName(username);
 				// authentication
@@ -275,9 +274,7 @@ public class Server {
 				        String dbPassword = br.readLine();
 				        br.close();
 	
-				        // hash
-				        String pw = "123456";   // TODO: Make this get the password from the client; hash before sending
-				        String password = AeSimpleSHA1.SHA1(pw);
+				        String password = this.password;
 				        // compare
 				        if (!password.equals(dbPassword)) {
 				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
@@ -318,7 +315,7 @@ public class Server {
 			// but I read a String, I am sure it will work
 			catch (ClassNotFoundException e) {
 			}
-            date = new Date().toString() + "\n";
+            logonDate = new Date().toString() + "\n";
 		}
 		
 
@@ -383,7 +380,7 @@ public class Server {
     					    // scan all the users connected
     					    for(int i = 0; i < clientList.size(); ++i) {
     					        ClientThread ct = clientList.get(i);
-    					        writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.date);
+    					        writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.logonDate);
     					    }
     					    break;
 					}

@@ -80,7 +80,7 @@ public class ServerCommandHandler {
 				// scan all the users connected
 				for(int i = 0; i < Server.clientList.size(); ++i) {
 					ClientThread ct = Server.clientList.get(i);
-					Server.display((i+1) + ") <" + ct.username + "> has been connected since " + ct.date);
+					Server.display((i+1) + ") <" + ct.username + "> has been connected since " + ct.logonDate);
 				}
 			}
 			else if (command.startsWith("mode")) {

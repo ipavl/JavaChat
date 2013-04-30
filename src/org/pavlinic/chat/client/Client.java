@@ -46,7 +46,6 @@ public class Client  {
 		this.isGUI = isGUI;
 		this.server = server;
 		this.port = port;
-		this.setPassword(password);
 		// List of disallowed characters
 		//String[] illegalChars = {"@", "%", "+","#"};
 		
@@ -72,6 +71,7 @@ public class Client  {
 		    	validUsername = true;
 				this.username = username;
 		    }
+	        this.password = password;
 	    //}
 		// TODO: Implement password
 	}
@@ -112,11 +112,12 @@ public class Client  {
 	
 			// creates the Thread to listen from the server 
 			new ListenFromServer().start();
-			// Send our username to the server this is the only message that we
-			// will send as a String. All other messages will be ChatMessage objects
+			// Send the username and password to the server. These are the only things
+			// we will send as strings. All other messages will be PacketHandler objects.
 			try
 			{
 				sOutput.writeObject(username);
+				sOutput.writeObject(password);
 			}
 			catch (IOException eIO) {
 				display("Exception establishing connection to server: " + eIO);
