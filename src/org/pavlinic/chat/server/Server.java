@@ -12,8 +12,8 @@ import org.pavlinic.chat.PacketHandler;
  * The server that can be run both as a console and GUI application
  */
 public class Server {
-	static String sVersion = "0.4-alpha";
-	static String compileDate = "Aug 04, 2012";
+	static String sVersion = "0.4.1-alpha";
+	static String compileDate = "Apr 29, 2013";
 	// a unique ID for each connection
 	private static int uniqueId;
 	// an ArrayList to keep the list of the Client
@@ -295,7 +295,7 @@ public class Server {
 			    	}
 			        	
 			    } catch (Exception e) {
-			    	writeMsg("U DUN GOOFED: " + e);
+			    	writeMsg("Error: " + e);
 			    }
 				//display(username + " just connected.");
 			    if (isIdentified || !isRegistered) {
