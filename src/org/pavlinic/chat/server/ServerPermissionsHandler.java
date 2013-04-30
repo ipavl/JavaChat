@@ -24,7 +24,8 @@ public class ServerPermissionsHandler {
 				
 			    String str;
 			    int theCount = 0;	// Ah! Ah! Ah!
-				// Administrators
+				
+			    // Administrators
 			    lstAdmin.add("Console".toLowerCase());	// console should always be an administrator
 				inputFile = new BufferedReader(new FileReader("data/users-admins.txt"));
 			    while ((str = inputFile.readLine()) != null) {
@@ -32,7 +33,9 @@ public class ServerPermissionsHandler {
 			        theCount++;
 			    }
 			    Server.display("  - Loaded " + theCount + " administrators from file.");
+	            inputFile.close();
 			    theCount = 0;
+			    
 			    // Operators
 				inputFile = new BufferedReader(new FileReader("data/users-ops.txt"));
 			    while ((str = inputFile.readLine()) != null) {
@@ -40,7 +43,9 @@ public class ServerPermissionsHandler {
 			        theCount++;
 			    }
 			    Server.display("  - Loaded " + theCount + " operators from file.");
+			    inputFile.close();
 			    theCount = 0;
+			    
 			    // Voiced users
 				inputFile = new BufferedReader(new FileReader("data/users-voiced.txt"));
 			    while ((str = inputFile.readLine()) != null) {
@@ -48,7 +53,9 @@ public class ServerPermissionsHandler {
 			        theCount++;
 			    }
 			    Server.display("  - Loaded " + theCount + " voiced users from file.");
+	            inputFile.close();
 			    theCount = 0;
+			    
 			    // Banned users
 				inputFile = new BufferedReader(new FileReader("data/users-banned.txt"));
 			    while ((str = inputFile.readLine()) != null) {
@@ -56,6 +63,7 @@ public class ServerPermissionsHandler {
 			        theCount++;
 			    }
 			    Server.display("  - Loaded " + theCount + " banned users from file.");
+	            inputFile.close();
 			    theCount = 0;
 			} catch (FileNotFoundException e) {
 			    e.printStackTrace();
