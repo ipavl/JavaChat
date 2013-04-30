@@ -1,6 +1,9 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.client;
 
 import javax.swing.*;
+
+import org.pavlinic.chat.ChatMessage;
+
 import java.awt.event.*;
 import java.util.Random;
 

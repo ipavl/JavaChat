@@ -1,4 +1,4 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.server;
 
 import javax.swing.*;
 import java.awt.*;

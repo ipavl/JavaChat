@@ -1,8 +1,10 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.client;
 
 import java.net.*;
 import java.io.*;
 import java.util.*;
+
+import org.pavlinic.chat.ChatMessage;
 
 /*
  * The Client that can be run both as a console or a GUI

@@ -1,4 +1,4 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.server;
 
 public class ServerBot {
 	public static void processCommand(String username, String command) {

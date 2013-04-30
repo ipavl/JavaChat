@@ -2,6 +2,9 @@ CHANGELOG
 =========
 
 CLIENT
+[10:15PM 4/29/2013]
+	- refactored into org.pavlinic.chat.client for client-specific features
+
 [7:43PM 7/29/2012]
 	- temporarily changed client-side username check to if statement (double ':s')
 	- client will reject usernames longer than 16 characters
@@ -19,6 +22,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[10:16PM 4/29/2013]
+	- refactored into org.pavlinic.chat.server for server-specific features
 [8:58PM 8/4/2012]: v0.4-alpha
 	- began implementing authentication system
 		* the client has not yet been updated to support this update

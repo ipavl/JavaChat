@@ -1,4 +1,4 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.server;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,7 +6,8 @@ import java.io.FileWriter;
 import java.net.Socket;
 import java.util.Date;
 
-import org.pavlinic.chat.Server.ClientThread;
+import org.pavlinic.chat.AeSimpleSHA1;
+import org.pavlinic.chat.server.Server.ClientThread;
 
 public class ServerCommandHandler {
 	

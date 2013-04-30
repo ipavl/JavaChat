@@ -1,9 +1,12 @@
-package org.pavlinic.chat;
+package org.pavlinic.chat.server;
 
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import org.pavlinic.chat.AeSimpleSHA1;
+import org.pavlinic.chat.ChatMessage;
 
 /*
  * The server that can be run both as a console and GUI application
