@@ -254,7 +254,7 @@ public class Server {
 			// a unique id
 			id = ++clientID;
 			this.socket = socket;
-			/* Creating both Data Stream */
+			/* Creating both Data Streams */
 			//System.out.println("Thread trying to create object input/output streams...");	// debug
 			try
 			{
@@ -276,7 +276,7 @@ public class Server {
 				        br.close();
 	
 				        // hash
-				        String pw = "123456";
+				        String pw = "123456";   // TODO: Make this get the password from the client; hash before sending
 				        String password = AeSimpleSHA1.SHA1(pw);
 				        // compare
 				        if (!password.equals(dbPassword)) {
@@ -434,5 +434,3 @@ public class Server {
 		}
 	}
 }
-
-

@@ -275,6 +275,8 @@ public class Client  {
 		else if (msg.equalsIgnoreCase("/quit")) {
 			System.exit(0);
 		}
+		// Close the scanner to prevent leaks
+		scan.close();
 	}
 
 	static void listCommands() {
