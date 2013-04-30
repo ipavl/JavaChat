@@ -15,13 +15,13 @@ public class Server {
 	static String sVersion = "0.4.1-alpha";
 	static String compileDate = "Apr 29, 2013";
 	// a unique ID for each connection
-	private static int uniqueId;
+	private static int clientID;
 	// an ArrayList to keep the list of the Client
-	static ArrayList<ClientThread> al;
+	static ArrayList<ClientThread> clientList;
 	// if I am in a GUI
-	private static ServerGUI sg;
+	private static ServerGUI isGUI;
 	// to display time
-	static SimpleDateFormat sdf;
+	static SimpleDateFormat dateFormat;
 	// the port number to listen for connection
 	public static int port;
 	// the boolean that will be turned off to stop the server
@@ -70,15 +70,15 @@ public class Server {
 	
 	public Server(int port, ServerGUI sg) {
 		// GUI or not
-		Server.sg = sg;
+		Server.isGUI = sg;
 		// the port
 		Server.port = port;
 		// to display [MMM-dd HH:mm:ss] (24-hr)
-		sdf = new SimpleDateFormat("[MMM-dd HH:mm:ss]");
+		dateFormat = new SimpleDateFormat("[MMM-dd HH:mm:ss]");
 		// to display [MMM-dd HH:mm:ss a] (12-hr)
 		//sdf = new SimpleDateFormat("[MMM-dd hh:mm:ssa]");
 		// ArrayList for the Client list
-		al = new ArrayList<ClientThread>();
+		clientList = new ArrayList<ClientThread>();
 	}
 	
 	public void start() {
@@ -103,15 +103,15 @@ public class Server {
 				if(!isServerRunning)
 					break;
 				ClientThread t = new ClientThread(socket);  // make a thread of it
-				al.add(t);									// save it in the ArrayList
+				clientList.add(t);									// save it in the ArrayList
 				t.start();
 			}
 			// Server was asked to stop
 			try {
 				display("Server shutting down...");
 				serverSocket.close();
-				for(int i = 0; i < al.size(); ++i) {
-					ClientThread tc = al.get(i);
+				for(int i = 0; i < clientList.size(); ++i) {
+					ClientThread tc = clientList.get(i);
 					try {
 					tc.sInput.close();
 					tc.sOutput.close();
@@ -128,7 +128,7 @@ public class Server {
 		}
 		// something went bad
 		catch (IOException e) {
-            String msg = sdf.format(new Date()) + " exception on new ServerSocket: " + e + "\n";
+            String msg = dateFormat.format(new Date()) + " exception on new ServerSocket: " + e + "\n";
 			display(msg);
 		}
 	}
@@ -152,11 +152,11 @@ public class Server {
 	 * Display an event (not a message) to the console or the GUI
 	 */
 	public static void display(String msg) {
-		String event = sdf.format(new Date()) + " " + msg;
-		if(sg == null)
+		String event = dateFormat.format(new Date()) + " " + msg;
+		if(isGUI == null)
 			System.out.println(event);
 		else
-			sg.appendEvent(event + "\n");
+			isGUI.appendEvent(event + "\n");
 		logEvent(event);	// log to file
 	}
 	
@@ -165,23 +165,23 @@ public class Server {
 	 */
 	public static synchronized void broadcast(String message) {
 		// add HH:mm:ss and \n to the message
-		String time = sdf.format(new Date());
+		String time = dateFormat.format(new Date());
 		String messageLf = time + " " + message + "\n";
 		
 		// display message on console or GUI
-		if(sg == null)
+		if(isGUI == null)
 			System.out.print(messageLf);
 		else
-			sg.appendRoom(messageLf);     // append in the room window
+			isGUI.appendRoom(messageLf);     // append in the room window
 		logChat(messageLf);	// log to file
 		
 		// we loop in reverse order in case we would have to remove a Client
 		// because it has disconnected
-		for(int i = al.size(); --i >= 0;) {
-			ClientThread ct = al.get(i);
+		for(int i = clientList.size(); --i >= 0;) {
+			ClientThread ct = clientList.get(i);
 			// try to write to the Client, if it fails remove it from the list
 			if(!ct.writeMsg(messageLf)) {
-				al.remove(i);
+				clientList.remove(i);
 				display("Disconnected client " + ct.username + " removed from list.");
 			}
 		}
@@ -190,11 +190,11 @@ public class Server {
 	// for a client who logs off using the LOGOUT message
 	synchronized static void remove(int id) {
 		// scan the array list until we found the Id
-		for(int i = 0; i < al.size(); ++i) {
-			ClientThread ct = al.get(i);
+		for(int i = 0; i < clientList.size(); ++i) {
+			ClientThread ct = clientList.get(i);
 			// found it
 			if(ct.id == id) {
-				al.remove(i);
+				clientList.remove(i);
 				return;
 			}
 		}
@@ -231,7 +231,7 @@ public class Server {
 		server.start();
 	}
 
-	/** One instance of this thread will run for each client */
+	/* One instance of this thread will run for each client */
 	class ClientThread extends Thread {
 		// the socket where to listen/talk
 		Socket socket;
@@ -242,7 +242,7 @@ public class Server {
 		// the username of the Client
 		String username;
 		// the only type of message a will receive
-		PacketHandler cm;
+		PacketHandler packet;
 		// the connection date
 		String date;
 		// user is identified
@@ -252,7 +252,7 @@ public class Server {
 		// Constructor
 		ClientThread(Socket socket) {
 			// a unique id
-			id = ++uniqueId;
+			id = ++clientID;
 			this.socket = socket;
 			/* Creating both Data Stream */
 			//System.out.println("Thread trying to create object input/output streams...");	// debug
@@ -331,7 +331,7 @@ public class Server {
 				while(isServerRunning) {
 					// read a String (which is an object)
 					try {
-						cm = (PacketHandler) sInput.readObject();
+						packet = (PacketHandler) sInput.readObject();
 					}
 					catch (IOException e) {
 						//display(username + " caused exception reading streams: " + e);
@@ -342,51 +342,50 @@ public class Server {
 						break;
 					}
 					// the message part of the ChatMessage
-					String message = cm.getMessage();
+					String message = packet.getMessage();
 	
 					// Switch on the type of message receive
-					switch(cm.getType()) {
-	
-					case PacketHandler.MESSAGE:
-						if (!ServerPermissionsHandler.isBanned(username)) {		// ignore banned users
-							if (message.equalsIgnoreCase("/version"))
-								writeMsg("This server is running Womchat " + sVersion + 
-										" compiled on " + compileDate + "\n");
-							else if (message.startsWith("/") && message.length() > 1)	// command
-								ServerCommandHandler.processCommand(username, message.substring(1));
-							else if (message.startsWith("!"))	// command for the bot
-								ServerBot.processCommand(username, message.substring(1));
-							else	// message
-							{
-								if (ServerPermissionsHandler.isOperator(username))	// operator
-									broadcast("<@" + username + "> " + message);
-								else if (ServerPermissionsHandler.isVoiced(username))	// voiced
-									broadcast("<+" + username + "> " + message);
-								else if (ServerPermissionsHandler.isAdministrator(username))	// administrator
-									broadcast("<&" + username + "> " + message);
-								else
-									if (!isRoomModerated)	// user message, room doesn't have mode +m
-										broadcast("<" + username + "> " + message);
-									else
-										writeMsg("Cannot send message to channel: channel mode +m\n");
-							}
-						}
-						else
-							display(username + " tried sending message/command while banned: " + message);
-						break;
-					case PacketHandler.LOGOUT:
-						//display(username + " disconnected with a LOGOUT message.");
-						broadcast(username + " disconnected (LOGOUT).");
-						isServerRunning = false;
-						break;
-					case PacketHandler.LISTUSERS:
-						writeMsg("List of the users connected at " + sdf.format(new Date()) + ":\n");
-						// scan all the users connected
-						for(int i = 0; i < al.size(); ++i) {
-							ClientThread ct = al.get(i);
-							writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.date);
-						}
-						break;
+					switch(packet.getType()) {
+						case PacketHandler.MESSAGE:
+    					    if (!ServerPermissionsHandler.isBanned(username)) {		                // ignore banned users
+    					        if (message.equalsIgnoreCase("/version"))
+    					            writeMsg("This server is running Womchat " + sVersion + 
+    					                    " compiled on " + compileDate + "\n");
+    					        else if (message.startsWith("/") && message.length() > 1)	        // command
+    					            ServerCommandHandler.processCommand(username, message.substring(1));
+    					        else if (message.startsWith("!"))	                                // command for the bot
+    					            ServerBot.processCommand(username, message.substring(1));
+    					        else	                                                            // message
+    					        {
+    					            if (ServerPermissionsHandler.isOperator(username))	            // operator
+    					                broadcast("<@" + username + "> " + message);
+    					            else if (ServerPermissionsHandler.isVoiced(username))	        // voiced
+    					                broadcast("<+" + username + "> " + message);
+    					            else if (ServerPermissionsHandler.isAdministrator(username))	// administrator
+    					                broadcast("<&" + username + "> " + message);
+    					            else
+    					                if (!isRoomModerated)	                                    // user message, room not +m
+    					                    broadcast("<" + username + "> " + message);
+    					                else
+    					                    writeMsg("Cannot send message to channel: channel mode +m\n");
+    					        }
+    					    }
+    					    else
+    					        display(username + " tried sending message/command while banned: " + message);
+    					    break;
+						case PacketHandler.LOGOUT:
+    					    //display(username + " disconnected with a LOGOUT message.");
+    					    broadcast(username + " disconnected (LOGOUT).");
+    					    isServerRunning = false;
+    					    break;
+						case PacketHandler.LISTUSERS:
+    					    writeMsg("List of the users connected at " + dateFormat.format(new Date()) + ":\n");
+    					    // scan all the users connected
+    					    for(int i = 0; i < clientList.size(); ++i) {
+    					        ClientThread ct = clientList.get(i);
+    					        writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.date);
+    					    }
+    					    break;
 					}
 				}
 			}
@@ -417,7 +416,7 @@ public class Server {
 		 * Write a String to the Client output stream
 		 */
 		boolean writeMsg(String msg) {
-			// if Client is still connected send the message to it
+			// if Client is still connected send the message to it, else close its connection
 			if(!socket.isConnected()) {
 				close();
 				return false;

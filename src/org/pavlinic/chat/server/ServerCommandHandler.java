@@ -76,10 +76,10 @@ public class ServerCommandHandler {
 			else if (command.startsWith("userlist") && userRights == 4) {
 				// Usage: /userlist
 				// Effect: Displays list of connected users (console only)
-				Server.display("List of the users connected at " + Server.sdf.format(new Date()) + ":\n");
+				Server.display("List of the users connected at " + Server.dateFormat.format(new Date()) + ":\n");
 				// scan all the users connected
-				for(int i = 0; i < Server.al.size(); ++i) {
-					ClientThread ct = Server.al.get(i);
+				for(int i = 0; i < Server.clientList.size(); ++i) {
+					ClientThread ct = Server.clientList.get(i);
 					Server.display((i+1) + ") <" + ct.username + "> has been connected since " + ct.date);
 				}
 			}
