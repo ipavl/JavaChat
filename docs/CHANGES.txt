@@ -1,0 +1,119 @@
+CHANGELOG
+=========
+
+CLIENT
+[7:43PM 7/29/2012]
+	- temporarily changed client-side username check to if statement (double ':s')
+	- client will reject usernames longer than 16 characters
+[6:20PM 7/28/2012]
+	- the GUI client now allows users to set name before connecting to a server 
+[4:48PM 7/28/2012]
+	- began working on disallowed characters in username (client-sided for now :s)
+[8:22PM 7/27/2012]
+	- renamed 'cg' variable to 'isGUI'
+	- console and gui clients now both share the same 'connecting to server' message
+[9:12PM 7/26/2012]
+	- GUI client will no longer give the console-mode "/logout and /quit" message
+	- GUI client can no longer be resized (for the time being, at least)
+[4:59 PM 7/25/2012]
+	- client will no longer send blank messages
+
+SERVER
+[8:58PM 8/4/2012]: v0.4-alpha
+	- began implementing authentication system
+		* the client has not yet been updated to support this update
+		- accounts can be registered with /account register <password>
+		- passwords are hashed and stored in data/logins-db/USERNAME.dat
+		- users are only required to enter a password if the chosen name is already registered
+			- registered accounts cannot be logged into unless given the correct password
+		- passwords are hashed and then checked against the stored password hash
+			- upon successful login: the user is connected as normal
+			- upon unsuccessful login: the user is disconnected from the server and informed to try again
+		- an account file is created for 'console' to prevent hacked clients from connecting under that name
+	- feedback messages can now be sent to the client who issued a command via sendMessage()
+	- reloading permissions now clears the arrays first 
+[2:19PM 8/4/2012]: v0.3-alpha
+	- changed the way user permissions are handled for commands
+		- user rights are checked upon command entry, and then that variable is checked per command
+		- command permissions are now numeric-based:
+			* Console: 4
+			* Administrator: 3
+			* Operator: 2
+			* Voiced: 1
+			* Regular user: 0
+			* Banned user: -1
+	- server no longer adds an extra blank line after addPermission() and should now show correct numbers
+	- entering a "/" with nothing after it will not be sent as a command, just as a message.
+[9:14PM 8/2/2012]
+	- added /version
+[4:20PM 7/31/2012]
+	- giving someone a temporary permission is no longer case sensitive
+	- permissions that are saved to file are now saved with a \n to add a blank line afterwards
+[11:04AM 7/31/2012]
+	- permissions are now reloaded on giving a user permanent/auto permissions
+	- fixed a typo that would cause users-voiced.txt to not be created if non-existent
+	- added /reload to reload permissions
+[6:13PM 7/30/2012]
+	- added administrator rank (shares &-symbol with console in chat)
+	- permissions are now read from file into an array on startup
+		- console is always an administrator
+		- files are created if they don't exist
+	- added /mode
+		- Operator modes: +m, -m, +o, -o, +v, -v, +b (saves permission to file), -b
+		- Administrator modes: +O, +V (saves permission to file)
+		- Console modes: +A (saves permission to file)
+		- Permanently removing a user's auto-mode requires editing of the text file itself
+	- console can no longer use /nick
+	- TODO: Fix /kick and /mute, or something
+[7:27PM 7/29/2012]
+	- commands can now be sent from the server GUI (both /command and non-/command work)
+		- server is known as 'Console' in commands and is in the op array by default
+	- added /say for console-use only to broadcast a message as a normal user would
+		- messages are displayed as "<&Console> Message."
+	- added /userlist for console-suse only to display currently connected users
+[8:25PM 7/28/2012]
+	- /stop will now stop the server immediately instead of waiting for another client
+	- began working on getting permission lists from file (broken/disabled at the moment)
+[5:28PM 7/28/2012]
+	- upon connection, usermode is displayed to all connected users (irc style)
+		- Example: User1 connected. / <server> sets mode: +o User1
+		- current modes: +o, +v, +b
+[4:17PM 7/28/2012]
+	- banned users cannot send commands
+		- might need to allow /msg whenever that is added to question Operators
+[4:04PM 7/28/2012]
+	- names are now shown as IRC-style (e.g. <@username>)
+		- TODO: clean code up maybe
+	- finished adding voiced user rank
+		- TODO: permissions(?)
+	- began implementing a banlist in same style as op/voiced users
+		- server will reject messages from users from this list
+[8:20PM 7/27/2012]
+	- began implementing a permissions manager
+		- user permissions are managed via array lists in ServerPermissionsHandler
+		- TODO: implement passwords/authentication
+	- /mute and /kick now require operator status
+	- added /stop command for operators
+	- added user operators
+		- users are checked against op array prior to sending messages/commands
+[9:56PM 7/26/2012]
+	- /kick and /mute now only display feedback if the given thread exists 
+[11:45AM 7/26/2012]
+	- cleaned up method used to find a specific thread
+	- ClientThreads are now named upon receiving the username that they will handle
+		- this.setName(username);
+		- CommandHandler can now interact with user's based on name instead of id
+	- Changed /kick to /mute
+		- /kick would require "deafen" and "mute" deafen needs id and mute needs name
+	- ServerBot: added !clienthreads to list threads and the username they represent
+
+[5:16 PM 7/25/2012]
+	- began work on "ServerBot" to as an alternative command handler
+		- /commands would be "common" commands such as /kick and /me
+		- !commands could be added by the server admin
+			- might allow "custom" commands to be easily added this way from file
+				- or might trash the idea and stick to only hard-coded /commands
+		- added !about command
+		- commands are still sent as messages, but ServerBot responds to everyone
+			- might need to limit use of ServerBot to certain users
+	- /kick now "mutes" a user, given by thread id

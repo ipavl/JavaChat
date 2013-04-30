@@ -1,0 +1,11 @@
+DISCLAIMER
+
+If debugging is the process of removing bugs, then programming must be the process of putting them in. -Edsger Dijkstra
+Testing can only prove the presence of bugs, not their absence. -Edsger W. Dijkstra
+
+Troutman's First Programming Postulate: If a test installation functions perfectly, all subsequent systems will malfunction.
+Troutman's Second Programming Postulate: The most harmful error will not be discovered until a program has been in production for at least six months.
+Troutman's Third Programming Postulate: Job control cards that positively cannot be arranged in improper order will be.
+Troutman's Fourth Programming Postulate: Interchangeable tapes won't.
+Troutman's Fifth Programming Postulate: If the input editor has been designed to reject all bad input, an ingenious idiot will discover a method to get bad data past it.
+Troutman's Sixth Programming Postulate: Profanity is the one language all programmers know best.

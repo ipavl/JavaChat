@@ -1,0 +1,42 @@
+DISTRIBUTION
+
+The following files are "client" files and should be distributed to any users (either alone or in a jar file) who you wish to be able connect to your server:
+
+\<root folder>
+	- Run Client.bat
+	- Run Client (GUI).bat
+\org\pavlinic\chat
+	- ChatMessage.class
+	- Client$ListenFromServer.class
+	- Client.class
+	- ClientGUI$1.class
+	- ClientGUI$2.class
+	- ClientGUI.class
+\docs
+	- README-CLIENT.txt
+
+The following files are "server" files and are required to all be on the computer hosting the chat server:
+
+\<root folder>
+	- Run Server.bat
+	- Run Server (GUI).bat
+\org\pavlinic\chat
+	- ChatMessage.class
+	- Server$ClientThread.class
+	- Server.class
+	- ServerBot.class
+	- ServerCommandHandler.class
+	- ServerGUI$1.class
+	- ServerGUI$2.class
+	- ServerGUI$ServerRunning.class
+	- ServerGUI.class
+	- ServerPermissionsHandler.class
+
+NOTES
+
+* The GUI files could probably removed if running the client and/or server with a GUI is not desired.
+* The .bat files are scripts used to start the client/server.
+* If server commands are not desired, you MAY be able to exclude ServerCommandHandler.class, but this may result in undesired effects when a user attempts to use a command as the "command" is still trying to be passed to that file.
+* The same applies to permissions, but some commands will try and reference ServerPermissionsHandler.class so that may also cause issues if removed.
+
+Last updated: 8:16 PM 7/29/2012
