@@ -60,6 +60,7 @@ public class ServerCommandHandler {
 					    bw.write(AeSimpleSHA1.SHA1(service.substring(9)));	// hash the password
 					    bw.flush();
 					    sendMessage("Registered account successfully!");
+					    bw.close();
 			    	}
 			    	else {
 			    		sendMessage("That username is already registered.");
