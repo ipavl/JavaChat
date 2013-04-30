@@ -21,17 +21,17 @@ public class ServerCommandHandler {
 			Server.display(username + " issued command: " + command);
 
 			int userRights = 0;
-			if (ServerPermissionsHandler.isBanned(username))	// banned
+			if (ServerPermissionsHandler.isBanned(username))	             // banned
 				userRights = -1;
-			else if (username.equalsIgnoreCase("console"))	// console
+			else if (username.equalsIgnoreCase("console"))                   // console
 				userRights = 4;
-			else if (ServerPermissionsHandler.isAdministrator(username))	// admininistrator
+			else if (ServerPermissionsHandler.isAdministrator(username))	 // administrator
 				userRights = 3;
-			else if (ServerPermissionsHandler.isOperator(username))	// operator
+			else if (ServerPermissionsHandler.isOperator(username))          // operator
 				userRights = 2;
-			else if (ServerPermissionsHandler.isVoiced(username))	// voiced
+			else if (ServerPermissionsHandler.isVoiced(username))	         // voiced
 				userRights = 1;
-			else	// regular user
+			else	                                                         // regular user
 				userRights = 0;
 			
 			if (command.startsWith("me")) {
@@ -56,15 +56,14 @@ public class ServerCommandHandler {
 					String userAccount = "data/logins-db/" + username + ".dat";
 					boolean exists = (new File(userAccount)).exists();
 			    	if (!exists) {
-						BufferedWriter bw = null;
-						bw = new BufferedWriter(new FileWriter(userAccount, false));
+						BufferedWriter bw = new BufferedWriter(new FileWriter(userAccount, false));
 					    bw.write(AeSimpleSHA1.SHA1(service.substring(9)));	// hash the password
 					    bw.flush();
 					    sendMessage("Registered account successfully!");
 			    	}
 			    	else {
 			    		sendMessage("That username is already registered.");
-			    		sendMessage("If you own this account and want to changes its password,");
+			    		sendMessage("If you own this account and want to change its password,");
 			    		sendMessage("please use /account password <newpassword>");
 			    	}
 				}
@@ -175,9 +174,13 @@ public class ServerCommandHandler {
 					// nothing I can really do
 				}
 			}
-			//else {
-				//Server.writeMsg("Unknown command. Type /help for a list of commands.");
-			//}
+			else {
+			    // TODO: Make this a single function (i.e. make sendMessage interpret rank, and have this listed as one operation)
+			    if (userRights != 4)
+			        Server.display("Unknown command. Type /help for a list of commands.");
+			    else
+			        sendMessage("Unknown command. Type /help for a list of commands.");
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
