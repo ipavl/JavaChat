@@ -1,3 +1,10 @@
+/* 
+ * Client.java
+ * 
+ * This is the main class for the client and contains all of the methods that are
+ * needed to connect to a server via the command line.
+ */
+
 package org.pavlinic.chat.client;
 
 import java.net.*;
@@ -8,9 +15,6 @@ import java.util.*;
 import org.pavlinic.chat.AeSimpleSHA1;
 import org.pavlinic.chat.PacketHandler;
 
-/*
- * The Client that can be run both as a console or a GUI
- */
 public class Client  {
 
 	// for I/O
@@ -112,6 +116,7 @@ public class Client  {
 	
 			// creates the Thread to listen from the server 
 			new ListenFromServer().start();
+			
 			// Send the username and password to the server. These are the only things
 			// we will send as strings. All other messages will be PacketHandler objects.
 			try

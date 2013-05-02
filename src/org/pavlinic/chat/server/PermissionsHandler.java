@@ -1,9 +1,17 @@
+/*
+ * PermissionHandler.java
+ * 
+ * This file contains functions that handle user permissions, including reading and
+ * writing permissions to and from file, verifying the existence of permission files,
+ * and checking a user's permission level.
+ */
+
 package org.pavlinic.chat.server;
 
 import java.io.*;
 import java.util.*;
 
-public class ServerPermissionsHandler {
+public class PermissionsHandler {
 	static List<String> lstAdmin = new ArrayList<String>();
 	static List<String> lstOps = new ArrayList<String>();
 	static List<String> lstVoice = new ArrayList<String>();

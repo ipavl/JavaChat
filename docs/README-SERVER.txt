@@ -23,15 +23,3 @@ LOGGING
 The server will log all chat messages and events/errors to a file called server.log. This file
 is generally found in the same directory you launched the server from (i.e. where the Start script
 is located, or where you typed 'java Server' from at the command prompt).
-
-====================
-SERVER-SIDE COMMANDS
-====================
-
-The server itself does not currently include any commands. User management commands such
-as /kick and /ban are planned, but are not included at the current moment.
-
-The following are commands that can be executed via a client, provided the user has appropriate
-priveleges:
-
-	- /me <action>

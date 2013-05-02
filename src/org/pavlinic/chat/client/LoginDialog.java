@@ -1,3 +1,10 @@
+/* 
+ * LoginDialog.java
+ * 
+ * This class provides the interface to allow for the entry of login
+ * credentials in the GUI client.
+ */
+
 package org.pavlinic.chat.client;
 
 import java.awt.*;
@@ -12,8 +19,9 @@ public class LoginDialog extends JDialog {
     private JButton btnCancel;
 
     private JTextField tfUsername;
-    private JLabel lbPassHelp;
     private JPasswordField pfPassword;
+    
+    private JLabel lbPassHelp;
     private JLabel lbUsername;
     private JLabel lbPassword;
  

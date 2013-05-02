@@ -1,3 +1,11 @@
+/* 
+ * Server.java
+ * 
+ * This is the main class for the server and contains all of the methods that are
+ * needed to allow clients to connect and to manage messages. It cannot be run as
+ * a GUI by itself without the aid of ServerGUI.java.
+ */
+
 package org.pavlinic.chat.server;
 
 import java.io.*;
@@ -7,24 +15,28 @@ import java.util.*;
 
 import org.pavlinic.chat.PacketHandler;
 
-/*
- * The server that can be run both as a console and GUI application
- */
 public class Server {
-	static String sVersion = "0.4.1-alpha";
-	static String compileDate = "Apr 29, 2013";
+	static String sVersion = "0.6a";
+	static String compileDate = "Apr 30, 2013";
+	
 	// a unique ID for each connection
 	private static int clientID;
+	
 	// an ArrayList to keep the list of the Client
 	static ArrayList<ClientThread> clientList;
+	
 	// if I am in a GUI
 	private static ServerGUI isGUI;
+	
 	// to display time
 	static SimpleDateFormat dateFormat;
+	
 	// the port number to listen for connection
 	public static int port;
+	
 	// the boolean that will be turned off to stop the server
 	public static boolean isServerRunning;
+	
 	// the boolean that will check to see if the chat is mode +m
 	public static boolean isRoomModerated = false;
 	
@@ -86,7 +98,7 @@ public class Server {
 			ServerSocket serverSocket = new ServerSocket(port);
 			
 			// load permissions
-			ServerPermissionsHandler.initPermissions();
+			PermissionsHandler.initPermissions();
 			
 			// format message saying we are waiting
 			display("Server listening on port " + port + ".");
@@ -297,13 +309,13 @@ public class Server {
 				//display(username + " just connected.");
 			    if (isIdentified || !isRegistered) {
 					broadcast(username + " connected.");
-					if (ServerPermissionsHandler.isBanned(username))
+					if (PermissionsHandler.isBanned(username))
 						broadcast(socket.getInetAddress().toString() + " sets mode: +b " + username);
-					else if (ServerPermissionsHandler.isOperator(username))
+					else if (PermissionsHandler.isOperator(username))
 						broadcast(socket.getInetAddress().toString() + " sets mode: +o " + username);
-					else if (ServerPermissionsHandler.isVoiced(username))
+					else if (PermissionsHandler.isVoiced(username))
 						broadcast(socket.getInetAddress().toString() + " sets mode: +v " + username);
-					else if (ServerPermissionsHandler.isAdministrator(username))
+					else if (PermissionsHandler.isAdministrator(username))
 						broadcast(socket.getInetAddress().toString() + " sets mode: +A " + username);
 			    }
 			}
@@ -344,21 +356,21 @@ public class Server {
 					// Switch on the type of message receive
 					switch(packet.getType()) {
 						case PacketHandler.MESSAGE:
-    					    if (!ServerPermissionsHandler.isBanned(username)) {		                // ignore banned users
+    					    if (!PermissionsHandler.isBanned(username)) {		                // ignore banned users
     					        if (message.equalsIgnoreCase("/version"))
     					            writeMsg("This server is running Womchat " + sVersion + 
     					                    " compiled on " + compileDate + "\n");
     					        else if (message.startsWith("/") && message.length() > 1)	        // command
-    					            ServerCommandHandler.processCommand(username, message.substring(1));
+    					            CommandHandler.processCommand(username, message.substring(1));
     					        else if (message.startsWith("!"))	                                // command for the bot
     					            ServerBot.processCommand(username, message.substring(1));
     					        else	                                                            // message
     					        {
-    					            if (ServerPermissionsHandler.isOperator(username))	            // operator
+    					            if (PermissionsHandler.isOperator(username))	            // operator
     					                broadcast("<@" + username + "> " + message);
-    					            else if (ServerPermissionsHandler.isVoiced(username))	        // voiced
+    					            else if (PermissionsHandler.isVoiced(username))	        // voiced
     					                broadcast("<+" + username + "> " + message);
-    					            else if (ServerPermissionsHandler.isAdministrator(username))	// administrator
+    					            else if (PermissionsHandler.isAdministrator(username))	// administrator
     					                broadcast("<&" + username + "> " + message);
     					            else
     					                if (!isRoomModerated)	                                    // user message, room not +m

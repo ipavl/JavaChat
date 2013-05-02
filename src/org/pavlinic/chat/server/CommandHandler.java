@@ -1,3 +1,10 @@
+/*
+ * CommandHandler.java
+ * 
+ * This file handles commands sent by users and works with PermissionsHandler.java for
+ * permission handling.
+ */
+
 package org.pavlinic.chat.server;
 
 import java.io.BufferedWriter;
@@ -9,7 +16,7 @@ import java.util.Date;
 import org.pavlinic.chat.AeSimpleSHA1;
 import org.pavlinic.chat.server.Server.ClientThread;
 
-public class ServerCommandHandler {
+public class CommandHandler {
 	
 	static void sendMessage(String msg) {
 		((ClientThread) Server.ClientThread.currentThread()).writeMsg(msg + "\n");
@@ -20,17 +27,17 @@ public class ServerCommandHandler {
 			Server.display(username + " issued command: " + command);
 
 			int userRights = 0;
-			if (ServerPermissionsHandler.isBanned(username))	             // banned
+			if (PermissionsHandler.isBanned(username))	             // banned
 				userRights = -1;
-			else if (username.equalsIgnoreCase("console"))                   // console
+			else if (username.equalsIgnoreCase("console"))           // console
 				userRights = 4;
-			else if (ServerPermissionsHandler.isAdministrator(username))	 // administrator
+			else if (PermissionsHandler.isAdministrator(username))	 // administrator
 				userRights = 3;
-			else if (ServerPermissionsHandler.isOperator(username))          // operator
+			else if (PermissionsHandler.isOperator(username))        // operator
 				userRights = 2;
-			else if (ServerPermissionsHandler.isVoiced(username))	         // voiced
+			else if (PermissionsHandler.isVoiced(username))	         // voiced
 				userRights = 1;
-			else	                                                         // regular user
+			else	                                                 // regular user
 				userRights = 0;
 			
 			if (command.startsWith("me")) {
@@ -95,28 +102,28 @@ public class ServerCommandHandler {
 					else if(mode.equals("-m"))	// remove moderation mode
 						Server.isRoomModerated = false;
 					else if(mode.startsWith("+o"))	// temporary op
-						ServerPermissionsHandler.lstOps.add(mode.substring(3).toLowerCase());
+						PermissionsHandler.lstOps.add(mode.substring(3).toLowerCase());
 					else if(mode.startsWith("-o"))	// remove op
-						ServerPermissionsHandler.lstOps.remove(mode.substring(3).toLowerCase());
+						PermissionsHandler.lstOps.remove(mode.substring(3).toLowerCase());
 					else if(mode.startsWith("+v"))	// temporary voice
-						ServerPermissionsHandler.lstVoice.add(mode.substring(3).toLowerCase());
+						PermissionsHandler.lstVoice.add(mode.substring(3).toLowerCase());
 					else if(mode.startsWith("-v"))	// remove voice
-						ServerPermissionsHandler.lstVoice.remove(mode.substring(3).toLowerCase());
+						PermissionsHandler.lstVoice.remove(mode.substring(3).toLowerCase());
 					else if(mode.startsWith("+b"))	// ban (permanent)
-						ServerPermissionsHandler.addPermission("ban", mode.substring(3).toLowerCase());
+						PermissionsHandler.addPermission("ban", mode.substring(3).toLowerCase());
 					else if(mode.startsWith("-b"))	// unban (temporary)
-						ServerPermissionsHandler.lstBanned.remove(mode.substring(3).toLowerCase());
+						PermissionsHandler.lstBanned.remove(mode.substring(3).toLowerCase());
 					
 					if(userRights > 2) {	// administrator modes
 						if(mode.startsWith("+O"))	// permaop
-							ServerPermissionsHandler.addPermission("op", mode.substring(3));
+							PermissionsHandler.addPermission("op", mode.substring(3));
 						else if(mode.startsWith("+V"))	// permavoice
-							ServerPermissionsHandler.addPermission("voice", mode.substring(3));
+							PermissionsHandler.addPermission("voice", mode.substring(3));
 					}
 					
 					if(userRights == 4)	// console-only modes
 						if(mode.startsWith("+A"))	// make a user an administrator
-							ServerPermissionsHandler.addPermission("admin", mode.substring(3));
+							PermissionsHandler.addPermission("admin", mode.substring(3));
 					
 					Server.broadcast(username + " sets mode: " + mode);
 				}
@@ -124,7 +131,7 @@ public class ServerCommandHandler {
 			else if (command.equalsIgnoreCase("reload") && userRights > 2) {
 				// Usage: /reload
 				// Effect: Reloads server permissions
-				ServerPermissionsHandler.initPermissions();
+				PermissionsHandler.initPermissions();
 			}
 			/*else if (command.startsWith("mute") && ServerPermissionsHandler.isOperator(username) || ServerPermissionsHandler.isAdministrator(username)) {
 				// Usage: /mute <name>

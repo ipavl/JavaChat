@@ -8,13 +8,16 @@ prompt/terminal, or launch one of the included batch scripts:
 	> java Client username
 	> java Client username portNumber
 	> java Client username portNumber serverAddress
+	> java Client username portNumber serverAddress password
 
 	- If the portNumber is not specified 1500 is used.
-	- If the serverAddress is not specified "localHost" is used
+	- If the serverAddress is not specified "localhost" is used
 	- If the username is not specified "Guest" + random number is used
 	> java Client 
 	is equivalent to
 	> java Client Guest<random number> 1500 localhost 
+	
+	* Passwords may be visible in command line if the client is run via this method
 	 
 In console mode, if an error occurs the program simply stops. When a GUI id used, the
 GUI is informed of the disconnection.
@@ -37,3 +40,5 @@ These commands will only affect your client:
 	* /quit (exit client)
 	
 The GUI client has buttons for connect, disconnect, and userlist.
+
+Last updated: 9:30PM, 5/1/2013

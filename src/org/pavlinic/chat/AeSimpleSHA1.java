@@ -1,3 +1,11 @@
+/*
+ * AeSimpleSHA1.java
+ * 
+ * This class contains the functions used to hash passwords.
+ * 
+ * This file is shared between both the client and server.
+ */
+
 package org.pavlinic.chat;
 
 import java.io.UnsupportedEncodingException; 
@@ -5,7 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException; 
  
 public class AeSimpleSHA1 { 
- 
+    
     private static String convertToHex(byte[] data) { 
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < data.length; i++) { 

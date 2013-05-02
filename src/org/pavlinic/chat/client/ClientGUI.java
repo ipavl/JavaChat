@@ -1,3 +1,9 @@
+/* 
+ * ClientGUI.java
+ * 
+ * This class is used in conjunction with Client.java to run a client in GUI mode.
+ */
+
 package org.pavlinic.chat.client;
 
 import javax.swing.*;
@@ -10,9 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-/*
- * The Client with its GUI
- */
 public class ClientGUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;

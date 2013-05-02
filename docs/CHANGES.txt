@@ -2,6 +2,8 @@ CHANGELOG
 =========
 
 CLIENT
+[9:26PM 5/1/2013]
+	- added header comments to all files
 [2:15PM 4/30/2013]
 	- added authentication support to client
 	- added login credentials dialog window to client GUI
@@ -24,6 +26,10 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[9:26PM 5/1/2013]
+	- renamed ServerPermissionsHandler.java -> PermissionsHandler.java
+	- renamed ServerCommandHandler.java -> CommandHandler.java
+	- added header comments to all files
 [10:26AM 4/30/2013]
 	- fixed memory leaks with a few unclosed objects
 	- refactored some variable names

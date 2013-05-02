@@ -6,14 +6,11 @@ BOTH
 
 CLIENT
 * Change username checks to be server-sided
-* Update client to support handling and sending passwords to the server
 * Add a nogui argument flag to ClientGUI so the jar can be run from the command prompt
   instead of having to launch the GUI-less version from a different jar/command.
-* Update client to support new auth system
 
 SERVER
 * Add some form of PRIVMSG - /notice-like probably
-* Passwords, or some sort of authentication system ** mostly done **
 * Either add a boolean and if statements or make a stripped down
   version of initPermissions for reloading permissions and not having
   everything in the permission files re-added each time permissions need

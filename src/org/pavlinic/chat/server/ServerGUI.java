@@ -1,12 +1,15 @@
+/* 
+ * ServerGUI.java
+ * 
+ * This class is used in conjunction with Server.java to run a server in GUI mode.
+ */
+
 package org.pavlinic.chat.server;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/*
- * The server as a GUI
- */
 public class ServerGUI extends JFrame implements ActionListener, WindowListener {
 	
 	private static final long serialVersionUID = 1L;
@@ -48,7 +51,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 					// empty message ignore it
 					if(cmd.length() == 0)
 						return;
-					ServerCommandHandler.processCommand("Console", cmd);	// process command
+					CommandHandler.processCommand("Console", cmd);	// process command
 					sendCommand.setText("");
 					return;
 				}

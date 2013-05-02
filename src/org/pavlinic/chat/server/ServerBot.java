@@ -1,3 +1,11 @@
+/*
+ * ServerBot.java
+ * 
+ * This file handles !command-style commands. Generally other users can see these commands
+ * as the command is displayed in chat, and these commands are usually available via some
+ * form of bot in IRC. Most of these commands are just for debugging, however.
+ */
+
 package org.pavlinic.chat.server;
 
 public class ServerBot {
