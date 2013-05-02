@@ -16,8 +16,8 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "0.6a";
-	static String compileDate = "Apr 30, 2013";
+	static String sVersion = "0.6.1";
+	static String compileDate = "May 1, 2013";
 	
 	// a unique ID for each connection
 	private static int clientID;
