@@ -183,7 +183,7 @@ public class CommandHandler {
 			}
 			else {
 			    // TODO: Make this a single function (i.e. make sendMessage interpret rank, and have this listed as one operation)
-			    if (userRights != 4)
+			    if (userRights == 4)
 			        Server.display("Unknown command. Type /help for a list of commands.");
 			    else
 			        sendMessage("Unknown command. Type /help for a list of commands.");

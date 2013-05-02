@@ -3,6 +3,12 @@ Version number compatibility
 
 This file outlines which versions of the client each server build supports (only applies to builds 70+).
 
+****************** SYNTAX ******************
+server-build:
+	Major changes in build
+	* Valid clients: allowed client versions
+********************************************
+
 75:
 	Username validity checks are now server-sided
 	* Valid clients: 70+
