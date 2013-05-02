@@ -2,6 +2,8 @@ CHANGELOG
 =========
 
 CLIENT
+[11:32AM 5/2/2013]
+	- added version checking
 [9:26PM 5/1/2013]
 	- added header comments to all files
 [2:15PM 4/30/2013]
@@ -26,6 +28,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[11:32AM 5/2/2013]
+	- added version checking
 [9:26PM 5/1/2013]
 	- renamed ServerPermissionsHandler.java -> PermissionsHandler.java
 	- renamed ServerCommandHandler.java -> CommandHandler.java

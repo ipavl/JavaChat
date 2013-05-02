@@ -16,8 +16,10 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "0.6.1";
-	static String compileDate = "May 1, 2013";
+	static String sVersion = "70";
+	static String compileDate = "May 2, 2013";
+	
+	static int minClientVer = 70;     // the minimum version clients must be running to connect
 	
 	// a unique ID for each connection
 	private static int clientID;
@@ -238,6 +240,7 @@ public class Server {
 				return;
 				
 		}
+		
 		// create a server object and start it
 		Server server = new Server(portNumber);
 		server.start();
@@ -259,6 +262,9 @@ public class Server {
 		// the password from the client
 		String password;
 		
+		// the client version
+		int cVersion;
+		
 		// the only type of message a will receive
 		PacketHandler packet;
 		
@@ -268,6 +274,7 @@ public class Server {
 		// user is identified
         boolean isRegistered = false;
 		boolean isIdentified = false;
+		boolean isValidVersion = false;
 		
 		// Constructor
 		ClientThread(Socket socket) {
@@ -282,56 +289,66 @@ public class Server {
 				sOutput = new ObjectOutputStream(socket.getOutputStream());
 				sInput  = new ObjectInputStream(socket.getInputStream());
 				
-				// read the username
+				// read the username, password, and version of the client
 				username = (String) sInput.readObject();
 				password = (String) sInput.readObject();
+				cVersion = (int) sInput.readObject();
 				
-				// set the thread's name equal to the user's (easier to interact with)
-				this.setName(username);
-				
-				// authentication
-			    try {
-			    	String userAccount = "data/logins-db/" + username + ".dat";
-			    	boolean exists = (new File(userAccount)).exists();
-			    	if (exists) {	// the chosen username is registered; verify its password
-				    	writeMsg("Logging in...");
-					    BufferedReader br = new BufferedReader(new FileReader(userAccount));
-				        String dbPassword = br.readLine();
-				        br.close();
-	
-				        String password = this.password;
-				        // compare
-				        if (!password.equals(dbPassword)) {
-				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
-				        	writeMsg("If you do not have an account, that name is likely registered already.\n");
-				        	isIdentified = false;
-				        	isRegistered = true;
-				        }
-				        else {
-				        	writeMsg(" success!\nSuccessfully identified as " + username + "\n");
-				        	isIdentified = true;
-				        	isRegistered = true;
-				        }
-			    	} else {
-			    		isRegistered = false;	// username is not registered; go straight to connecting
-			    	}
-			        	
-			    } catch (Exception e) {
-			    	writeMsg("Error: " + e);
-			    }
-				
-			    //display(username + " just connected.");
-			    if (isIdentified || !isRegistered) {
-					broadcast(username + " connected.");
-					if (PermissionsHandler.isBanned(username))
-						broadcast(socket.getInetAddress().toString() + " sets mode: +b " + username);
-					else if (PermissionsHandler.isOperator(username))
-						broadcast(socket.getInetAddress().toString() + " sets mode: +o " + username);
-					else if (PermissionsHandler.isVoiced(username))
-						broadcast(socket.getInetAddress().toString() + " sets mode: +v " + username);
-					else if (PermissionsHandler.isAdministrator(username))
-						broadcast(socket.getInetAddress().toString() + " sets mode: +A " + username);
-			    }
+				if(cVersion >= minClientVer)
+				    isValidVersion = true;
+
+				if(isValidVersion) {
+    				// set the thread's name equal to the user's (easier to interact with)
+    				this.setName(username);
+    				
+    				// authentication
+    			    try {
+    			    	String userAccount = "data/logins-db/" + username + ".dat";
+    			    	boolean exists = (new File(userAccount)).exists();
+    			    	if (exists) {	// the chosen username is registered; verify its password
+    				    	writeMsg("Logging in...");
+    					    BufferedReader br = new BufferedReader(new FileReader(userAccount));
+    				        String dbPassword = br.readLine();
+    				        br.close();
+    	
+    				        String password = this.password;
+    				        // compare
+    				        if (!password.equals(dbPassword)) {
+    				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
+    				        	writeMsg("If you do not have an account, that name is likely registered already.\n");
+    				        	isIdentified = false;
+    				        	isRegistered = true;
+    				        }
+    				        else {
+    				        	writeMsg(" success!\nSuccessfully identified as " + username + "\n");
+    				        	isIdentified = true;
+    				        	isRegistered = true;
+    				        }
+    			    	} else {
+    			    		isRegistered = false;	// username is not registered; go straight to connecting
+    			    	}
+    			        	
+    			    } catch (Exception e) {
+    			    	writeMsg("Error: " + e);
+    			    }
+    				
+    			    //display(username + " just connected.");
+    			    if (isIdentified || !isRegistered) {
+    					broadcast(username + " connected.");
+    					if (PermissionsHandler.isBanned(username))
+    						broadcast(socket.getInetAddress().toString() + " sets mode: +b " + username);
+    					else if (PermissionsHandler.isOperator(username))
+    						broadcast(socket.getInetAddress().toString() + " sets mode: +o " + username);
+    					else if (PermissionsHandler.isVoiced(username))
+    						broadcast(socket.getInetAddress().toString() + " sets mode: +v " + username);
+    					else if (PermissionsHandler.isAdministrator(username))
+    						broadcast(socket.getInetAddress().toString() + " sets mode: +A " + username);
+    			    }
+				} else {
+				    writeMsg("Outdated client! Please update your client and try connecting again.\n");
+				    display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
+				    return;
+				}
 			}
 			catch (IOException e) {
 				display("Exception creating new input/output streams: " + e);
@@ -349,67 +366,69 @@ public class Server {
 			// to loop until LOGOUT
 			boolean isServerRunning = true;
 			
-			if (isIdentified || !isRegistered) {
-				while(isServerRunning) {
-					// read a String (which is an object)
-					try {
-						packet = (PacketHandler) sInput.readObject();
-					}
-					catch (IOException e) {
-						//display(username + " caused exception reading streams: " + e);
-						broadcast(username + " disconnected (" + e + ").");
-						break;
-					}
-					catch(ClassNotFoundException e2) {
-						break;
-					}
-					// the message part of the ChatMessage
-					String message = packet.getMessage();
-	
-					// Switch on the type of message receive
-					switch(packet.getType()) {
-						case PacketHandler.MESSAGE:
-    					    if (!PermissionsHandler.isBanned(username)) {		                // ignore banned users
-    					        if (message.equalsIgnoreCase("/version"))
-    					            writeMsg("This server is running Womchat " + sVersion + 
-    					                    " compiled on " + compileDate + "\n");
-    					        else if (message.startsWith("/") && message.length() > 1)	        // command
-    					            CommandHandler.processCommand(username, message.substring(1));
-    					        else if (message.startsWith("!"))	                                // command for the bot
-    					            ServerBot.processCommand(username, message.substring(1));
-    					        else	                                                            // message
-    					        {
-    					            if (PermissionsHandler.isOperator(username))	            // operator
-    					                broadcast("<@" + username + "> " + message);
-    					            else if (PermissionsHandler.isVoiced(username))	        // voiced
-    					                broadcast("<+" + username + "> " + message);
-    					            else if (PermissionsHandler.isAdministrator(username))	// administrator
-    					                broadcast("<&" + username + "> " + message);
-    					            else
-    					                if (!isRoomModerated)	                                    // user message, room not +m
-    					                    broadcast("<" + username + "> " + message);
-    					                else
-    					                    writeMsg("Cannot send message to channel: channel mode +m\n");
-    					        }
-    					    }
-    					    else
-    					        display(username + " tried sending message/command while banned: " + message);
-    					    break;
-						case PacketHandler.LOGOUT:
-    					    //display(username + " disconnected with a LOGOUT message.");
-    					    broadcast(username + " disconnected (LOGOUT).");
-    					    isServerRunning = false;
-    					    break;
-						case PacketHandler.LISTUSERS:
-    					    writeMsg("List of the users connected at " + dateFormat.format(new Date()) + ":\n");
-    					    // scan all the users connected
-    					    for(int i = 0; i < clientList.size(); ++i) {
-    					        ClientThread ct = clientList.get(i);
-    					        writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.logonDate);
-    					    }
-    					    break;
-					}
-				}
+			if(isValidVersion) {
+    			if (isIdentified || !isRegistered) {
+    				while(isServerRunning) {
+    					// read a String (which is an object)
+    					try {
+    						packet = (PacketHandler) sInput.readObject();
+    					}
+    					catch (IOException e) {
+    						//display(username + " caused exception reading streams: " + e);
+    						broadcast(username + " disconnected (" + e + ").");
+    						break;
+    					}
+    					catch(ClassNotFoundException e2) {
+    						break;
+    					}
+    					// the message part of the ChatMessage
+    					String message = packet.getMessage();
+    	
+    					// Switch on the type of message receive
+    					switch(packet.getType()) {
+    						case PacketHandler.MESSAGE:
+        					    if (!PermissionsHandler.isBanned(username)) {		                    // ignore banned users
+        					        if (message.equalsIgnoreCase("/version"))
+        					            writeMsg("This server is running JChat build " + sVersion + 
+        					                    " compiled on " + compileDate + "\n");
+        					        else if (message.startsWith("/") && message.length() > 1)	        // command
+        					            CommandHandler.processCommand(username, message.substring(1));
+        					        else if (message.startsWith("!"))	                                // command for the bot
+        					            ServerBot.processCommand(username, message.substring(1));
+        					        else	                                                            // message
+        					        {
+        					            if (PermissionsHandler.isOperator(username))	                // operator
+        					                broadcast("<@" + username + "> " + message);
+        					            else if (PermissionsHandler.isVoiced(username))	                // voiced
+        					                broadcast("<+" + username + "> " + message);
+        					            else if (PermissionsHandler.isAdministrator(username))	        // administrator
+        					                broadcast("<&" + username + "> " + message);
+        					            else
+        					                if (!isRoomModerated)	                                    // user message, room not +m
+        					                    broadcast("<" + username + "> " + message);
+        					                else
+        					                    writeMsg("Cannot send message to channel: channel mode +m\n");
+        					        }
+        					    }
+        					    else
+        					        display(username + " tried sending message/command while banned: " + message);
+        					    break;
+    						case PacketHandler.LOGOUT:
+        					    //display(username + " disconnected with a LOGOUT message.");
+        					    broadcast(username + " disconnected (LOGOUT).");
+        					    isServerRunning = false;
+        					    break;
+    						case PacketHandler.LISTUSERS:
+        					    writeMsg("List of the users connected at " + dateFormat.format(new Date()) + ":\n");
+        					    // scan all the users connected
+        					    for(int i = 0; i < clientList.size(); ++i) {
+        					        ClientThread ct = clientList.get(i);
+        					        writeMsg((i+1) + ") <" + ct.username + "> has been connected since " + ct.logonDate);
+        					    }
+        					    break;
+    					}
+    				}
+    			}
 			}
 			// remove myself from the arrayList containing the list of the
 			// connected Clients

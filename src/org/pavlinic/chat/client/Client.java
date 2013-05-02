@@ -17,6 +17,8 @@ import org.pavlinic.chat.PacketHandler;
 
 public class Client  {
 
+    private static int clientVer = 70;      // the client version
+    
 	// for I/O
 	private ObjectInputStream sInput;		// to read from the socket
 	private ObjectOutputStream sOutput;		// to write on the socket
@@ -35,17 +37,18 @@ public class Client  {
 	 *  server: the server address
 	 *  port: the port number
 	 *  username: the username
+	 *  password: the password
 	 */
-	Client(String server, int port, String username, String password) {
+	Client(String server, int port, String username, String password, int version) {
 		// which calls the common constructor with the GUI set to null
-		this(server, port, username, password, null);
+		this(server, port, username, password, version, null);
 	}
 	
 	/*
 	 * Constructor call when used from a GUI
 	 * in console mode the ClientGUI parameter is null
 	 */
-	Client(String server, int port, String username, String password, ClientGUI isGUI) {
+	Client(String server, int port, String username, String password, int version, ClientGUI isGUI) {
 		// save if we are in GUI mode or not
 		this.isGUI = isGUI;
 		this.server = server;
@@ -76,8 +79,8 @@ public class Client  {
 				this.username = username;
 		    }
 	        this.password = password;
+	        Client.setClientVer(version);
 	    //}
-		// TODO: Implement password
 	}
 	
 	/*
@@ -90,7 +93,7 @@ public class Client  {
 			try {
 				socket = new Socket(server, port);
 			} 
-			// if it failed not much I can so
+			// if it failed not much I can do
 			catch(Exception ec) {
 				display("Error connecting to server: " + ec);
 				return false;
@@ -117,12 +120,13 @@ public class Client  {
 			// creates the Thread to listen from the server 
 			new ListenFromServer().start();
 			
-			// Send the username and password to the server. These are the only things
-			// we will send as strings. All other messages will be PacketHandler objects.
+			// Send the username, password, and client version to the server. These are
+			// the only things we will send as strings. All other messages will be message objects.
 			try
 			{
 				sOutput.writeObject(username);
 				sOutput.writeObject(password);
+				sOutput.writeObject(clientVer);
 			}
 			catch (IOException eIO) {
 				display("Exception establishing connection to server: " + eIO);
@@ -246,8 +250,9 @@ public class Client  {
 				System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress] [password]");
 			return;
 		}
+		
 		// create the Client object
-		Client client = new Client(serverAddress, portNumber, userName, password);
+		Client client = new Client(serverAddress, portNumber, userName, password, getClientVer());
 		// test if we can start the connection to the Server
 		// if it failed nothing we can do
 		if(!client.start())
@@ -317,6 +322,14 @@ public class Client  {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public static int getClientVer() {
+        return clientVer;
+    }
+
+    public static void setClientVer(int clientVer) {
+        Client.clientVer = clientVer;
     }
 
     /*

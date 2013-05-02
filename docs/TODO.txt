@@ -1,9 +1,6 @@
 TODO LIST
 =========
 
-BOTH
-* Version checking
-
 CLIENT
 * Change username checks to be server-sided
 * Add a nogui argument flag to ClientGUI so the jar can be run from the command prompt

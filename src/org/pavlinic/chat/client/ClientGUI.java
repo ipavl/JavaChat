@@ -208,7 +208,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 		}
 
 		// try creating a new Client with GUI
-		client = new Client(server, port, username, password, this);
+		client = new Client(server, port, username, password, Client.getClientVer(), this);
 		// test if we can start the Client
 		if(!client.start()) 
 			return;
