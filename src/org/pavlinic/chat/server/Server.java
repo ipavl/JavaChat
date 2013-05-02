@@ -106,14 +106,17 @@ public class Server {
 			// infinite loop to wait for connections
 			while(isServerRunning) 
 			{	
-				Socket socket = serverSocket.accept();  	// accept connection
+				Socket socket = serverSocket.accept();  	     // accept connection
+				
 				// if I was asked to stop
 				if(!isServerRunning)
 					break;
+				
 				ClientThread thread = new ClientThread(socket);  // make a thread of it
-				clientList.add(thread);									// save it in the ArrayList
+				clientList.add(thread);							 // save it in the ArrayList
 				thread.start();
 			}
+			
 			// Server was asked to stop
 			try {
 				display("Server shutting down...");
@@ -134,7 +137,8 @@ public class Server {
 				display("Exception closing the server and clients: " + e);
 			}
 		}
-		// something went bad
+		
+		// something went wrong
 		catch (IOException e) {
             String msg = dateFormat.format(new Date()) + " exception on new ServerSocket: " + e + "\n";
 			display(msg);
@@ -245,16 +249,22 @@ public class Server {
 		Socket socket;
 		ObjectInputStream sInput;
 		ObjectOutputStream sOutput;
+		
 		// my unique id (easier for disconnection)
 		int id;
+		
 		// the username of the Client
 		String username;
+		
 		// the password from the client
 		String password;
+		
 		// the only type of message a will receive
 		PacketHandler packet;
+		
 		// the connection date
 		String logonDate;
+		
 		// user is identified
         boolean isRegistered = false;
 		boolean isIdentified = false;
@@ -271,11 +281,14 @@ public class Server {
 				// create output first
 				sOutput = new ObjectOutputStream(socket.getOutputStream());
 				sInput  = new ObjectInputStream(socket.getInputStream());
+				
 				// read the username
 				username = (String) sInput.readObject();
 				password = (String) sInput.readObject();
+				
 				// set the thread's name equal to the user's (easier to interact with)
 				this.setName(username);
+				
 				// authentication
 			    try {
 			    	String userAccount = "data/logins-db/" + username + ".dat";
@@ -306,7 +319,8 @@ public class Server {
 			    } catch (Exception e) {
 			    	writeMsg("Error: " + e);
 			    }
-				//display(username + " just connected.");
+				
+			    //display(username + " just connected.");
 			    if (isIdentified || !isRegistered) {
 					broadcast(username + " connected.");
 					if (PermissionsHandler.isBanned(username))
@@ -329,7 +343,6 @@ public class Server {
 			}
             logonDate = new Date().toString() + "\n";
 		}
-		
 
 		// what will run forever
 		public void run() {
