@@ -2,6 +2,8 @@ CHANGELOG
 =========
 
 CLIENT
+[11:43AM 5/2/2013]
+	- removed client-sided username checks and made them server-side instead
 [11:32AM 5/2/2013]
 	- added version checking
 [9:26PM 5/1/2013]
@@ -28,6 +30,9 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[11:43AM 5/2/2013]
+	- removed client-sided username checks and made them server-side instead
+		-> previous clients will still be able to connect if they still have the checks
 [11:32AM 5/2/2013]
 	- added version checking
 [9:26PM 5/1/2013]

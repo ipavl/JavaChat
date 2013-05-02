@@ -17,7 +17,7 @@ import org.pavlinic.chat.PacketHandler;
 
 public class Client  {
 
-    private static int clientVer = 70;      // the client version
+    private static int clientVer = 75;      // the client version
     
 	// for I/O
 	private ObjectInputStream sInput;		// to read from the socket
@@ -30,7 +30,6 @@ public class Client  {
 	// the server, the port and the username
 	private String server, username, password;
 	private int port;
-	private boolean validUsername;	// verifies that the chosen username is okay
 
 	/*
 	 *  Constructor called by console mode
@@ -38,6 +37,7 @@ public class Client  {
 	 *  port: the port number
 	 *  username: the username
 	 *  password: the password
+	 *  version: the client's version
 	 */
 	Client(String server, int port, String username, String password, int version) {
 		// which calls the common constructor with the GUI set to null
@@ -49,95 +49,66 @@ public class Client  {
 	 * in console mode the ClientGUI parameter is null
 	 */
 	Client(String server, int port, String username, String password, int version, ClientGUI isGUI) {
-		// save if we are in GUI mode or not
-		this.isGUI = isGUI;
-		this.server = server;
-		this.port = port;
-		// List of disallowed characters
-		//String[] illegalChars = {"@", "%", "+","#"};
-		
-	    //for(int i = 0; i < illegalChars.length; i++)
-	    //{
-	        /*if(username.contains(illegalChars[i]))	// faulty code at the moment; will null server
-	        {
-	        	// invalid username
-	        	display("Invalid username. Username cannot contain character(s): " + illegalChars[i].toString());
-	            return;
-	        }*/
-	        if (username.equalsIgnoreCase("console") || username.contains("@") || username.contains("+") ||	 
-	        		username.contains("&") || username.contains("~") || username.contains("#") || 
-	        		username.length() > 16) {	// ugly method
-	        	display("Invalid username. Names cannot be longer than 16 characters or contain the ");
-	        	display("word \"Console\" or the following characters: @ + & ~ #");
-	        	display("Change your username and try again.");
-	        	validUsername = false;
-	        	return;
-	        }
-		    else
-		    {
-		    	validUsername = true;
-				this.username = username;
-		    }
-	        this.password = password;
-	        Client.setClientVer(version);
-	    //}
+		this.isGUI = isGUI;               // save if we are in GUI mode or not
+		this.server = server;             // the server we're connecting to
+		this.port = port;                 // the port
+		this.username = username;         // our username
+	    this.password = password;         // our password
+	    Client.setClientVer(version);     // our client's version
 	}
 	
 	/*
-	 * To start the dialog
+	 * To start the connection
 	 */
 	public boolean start() {
-		if(validUsername) {	// don't even bother connecting if the name isn't valid
-			// try to connect to the server
-			display("Connecting to server...");
-			try {
-				socket = new Socket(server, port);
-			} 
-			// if it failed not much I can do
-			catch(Exception ec) {
-				display("Error connecting to server: " + ec);
-				return false;
-			}
-			
-			String msg = "Connection accepted " + socket.getInetAddress() + ": " + socket.getPort();
-			display(msg);
-			// TODO: Get MOTD from server
-			
-			if(isGUI == null)	// this means the text won't show up in GUI mode
-				System.out.println("Should you wish to disconnect, you can type /logout at anytime.");
+		// try to connect to the server
+		display("Connecting to server...");
+		try {
+			socket = new Socket(server, port);
+		} 
 		
-			/* Creating both Data Stream */
-			try
-			{
-				sInput  = new ObjectInputStream(socket.getInputStream());
-				sOutput = new ObjectOutputStream(socket.getOutputStream());
-			}
-			catch (IOException eIO) {
-				display("Exception creating new input/output Streams: " + eIO);
-				return false;
-			}
-	
-			// creates the Thread to listen from the server 
-			new ListenFromServer().start();
-			
-			// Send the username, password, and client version to the server. These are
-			// the only things we will send as strings. All other messages will be message objects.
-			try
-			{
-				sOutput.writeObject(username);
-				sOutput.writeObject(password);
-				sOutput.writeObject(clientVer);
-			}
-			catch (IOException eIO) {
-				display("Exception establishing connection to server: " + eIO);
-				disconnect();
-				return false;
-			}
-			// success we inform the caller that it worked
-			return true;
-		}
-		else
+		// if it failed not much I can do
+		catch(Exception ec) {
+			display("Error connecting to server: " + ec);
 			return false;
+		}
+		
+		String msg = "Connection accepted " + socket.getInetAddress() + ": " + socket.getPort();
+		display(msg);
+		// TODO: Get MOTD from server
+		
+		if(isGUI == null)	// this means the text won't show up in GUI mode
+			System.out.println("Should you wish to disconnect, you can type /logout at anytime.");
+	
+		/* Creating both Data Stream */
+		try
+		{
+			sInput  = new ObjectInputStream(socket.getInputStream());
+			sOutput = new ObjectOutputStream(socket.getOutputStream());
+		}
+		catch (IOException eIO) {
+			display("Exception creating new input/output Streams: " + eIO);
+			return false;
+		}
+
+		// creates the Thread to listen from the server 
+		new ListenFromServer().start();
+		
+		// Send the username, password, and client version to the server. These are
+		// the only things we will send as strings. All other messages will be message objects.
+		try
+		{
+			sOutput.writeObject(username);
+			sOutput.writeObject(password);
+			sOutput.writeObject(clientVer);
+		}
+		catch (IOException eIO) {
+			display("Exception establishing connection to server: " + eIO);
+			disconnect();
+			return false;
+		}
+		// success we inform the caller that it worked
+		return true;
 	}
 
 	/*

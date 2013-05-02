@@ -16,7 +16,7 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "70";
+	static String sVersion = "75";
 	static String compileDate = "May 2, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
@@ -271,10 +271,11 @@ public class Server {
 		// the connection date
 		String logonDate;
 		
-		// user is identified
+		// user verification booleans
         boolean isRegistered = false;
 		boolean isIdentified = false;
 		boolean isValidVersion = false;
+		boolean isValidUsername = false;
 		
 		// Constructor
 		ClientThread(Socket socket) {
@@ -294,61 +295,73 @@ public class Server {
 				password = (String) sInput.readObject();
 				cVersion = (int) sInput.readObject();
 				
-				if(cVersion >= minClientVer)
+				if(cVersion >= minClientVer)    // version check
 				    isValidVersion = true;
-
-				if(isValidVersion) {
-    				// set the thread's name equal to the user's (easier to interact with)
-    				this.setName(username);
-    				
-    				// authentication
-    			    try {
-    			    	String userAccount = "data/logins-db/" + username + ".dat";
-    			    	boolean exists = (new File(userAccount)).exists();
-    			    	if (exists) {	// the chosen username is registered; verify its password
-    				    	writeMsg("Logging in...");
-    					    BufferedReader br = new BufferedReader(new FileReader(userAccount));
-    				        String dbPassword = br.readLine();
-    				        br.close();
-    	
-    				        String password = this.password;
-    				        // compare
-    				        if (!password.equals(dbPassword)) {
-    				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
-    				        	writeMsg("If you do not have an account, that name is likely registered already.\n");
-    				        	isIdentified = false;
-    				        	isRegistered = true;
-    				        }
-    				        else {
-    				        	writeMsg(" success!\nSuccessfully identified as " + username + "\n");
-    				        	isIdentified = true;
-    				        	isRegistered = true;
-    				        }
-    			    	} else {
-    			    		isRegistered = false;	// username is not registered; go straight to connecting
-    			    	}
-    			        	
-    			    } catch (Exception e) {
-    			    	writeMsg("Error: " + e);
-    			    }
-    				
-    			    //display(username + " just connected.");
-    			    if (isIdentified || !isRegistered) {
-    					broadcast(username + " connected.");
-    					if (PermissionsHandler.isBanned(username))
-    						broadcast(socket.getInetAddress().toString() + " sets mode: +b " + username);
-    					else if (PermissionsHandler.isOperator(username))
-    						broadcast(socket.getInetAddress().toString() + " sets mode: +o " + username);
-    					else if (PermissionsHandler.isVoiced(username))
-    						broadcast(socket.getInetAddress().toString() + " sets mode: +v " + username);
-    					else if (PermissionsHandler.isAdministrator(username))
-    						broadcast(socket.getInetAddress().toString() + " sets mode: +A " + username);
-    			    }
-				} else {
-				    writeMsg("Outdated client! Please update your client and try connecting again.\n");
-				    display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
-				    return;
+				else {
+                    writeMsg("Outdated client! Please update your client and try connecting again.\n");
+                    display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
+                    isValidVersion = false;
+                    return;
 				}
+                    
+	            if (username.equalsIgnoreCase("console") || username.contains("@") || username.contains("+") ||  
+	                    username.contains("&") || username.contains("~") || username.contains("#") || 
+	                    username.length() > 16) {
+	                writeMsg("Invalid username. Names cannot be longer than 16 characters or contain the word \"Console\" or\n");
+	                writeMsg("the following characters: @ + & ~ #\n");
+	                writeMsg("Change your username and try again.\n");
+	                display("Disconnecting user: " + username + " (invalid username)");
+	                return;
+	            } else {
+	                isValidUsername = true;
+	            }
+
+				// set the thread's name equal to the user's (easier to interact with)
+				this.setName(username);
+				
+				// authentication
+			    try {
+			    	String userAccount = "data/logins-db/" + username + ".dat";
+			    	boolean exists = (new File(userAccount)).exists();
+			    	if (exists) {	// the chosen username is registered; verify its password
+				    	writeMsg("Logging in...");
+					    BufferedReader br = new BufferedReader(new FileReader(userAccount));
+				        String dbPassword = br.readLine();
+				        br.close();
+	
+				        String password = this.password;
+				        // compare
+				        if (!password.equals(dbPassword)) {
+				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
+				        	writeMsg("If you do not have an account, that name is likely registered already.\n");
+				        	isIdentified = false;
+				        	isRegistered = true;
+				        }
+				        else {
+				        	writeMsg(" success!\nSuccessfully identified as " + username + "\n");
+				        	isIdentified = true;
+				        	isRegistered = true;
+				        }
+			    	} else {
+			    		isRegistered = false;	// username is not registered; go straight to connecting
+			    	}
+			        	
+			    } catch (Exception e) {
+			    	writeMsg("Error: " + e);
+			    }
+				
+			    //display(username + " just connected.");
+			    if (isIdentified || !isRegistered) {
+					broadcast(username + " connected.");
+					if (PermissionsHandler.isBanned(username))
+						broadcast(socket.getInetAddress().toString() + " sets mode: +b " + username);
+					else if (PermissionsHandler.isOperator(username))
+						broadcast(socket.getInetAddress().toString() + " sets mode: +o " + username);
+					else if (PermissionsHandler.isVoiced(username))
+						broadcast(socket.getInetAddress().toString() + " sets mode: +v " + username);
+					else if (PermissionsHandler.isAdministrator(username))
+						broadcast(socket.getInetAddress().toString() + " sets mode: +A " + username);
+			    }
 			}
 			catch (IOException e) {
 				display("Exception creating new input/output streams: " + e);
@@ -366,7 +379,7 @@ public class Server {
 			// to loop until LOGOUT
 			boolean isServerRunning = true;
 			
-			if(isValidVersion) {
+			if(isValidVersion && isValidUsername) {
     			if (isIdentified || !isRegistered) {
     				while(isServerRunning) {
     					// read a String (which is an object)
