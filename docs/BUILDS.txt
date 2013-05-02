@@ -1,0 +1,15 @@
+Version number compatibility
+============================
+
+This file outlines which versions of the client each server build supports (only applies to builds 70+).
+
+75:
+	Username validity checks are now server-sided
+	* Valid clients: 70+
+70:
+	The client's version is now checked against the minimum version required by the server
+	* Valid clients: 70+
+60:
+	The client has been updated to support authentication properly
+	* There is no version checking in this build, but it is not recommended to use different versions of the
+	  client than that of the server.
