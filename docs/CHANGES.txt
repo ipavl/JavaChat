@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[5:36PM 5/2/2013]
+	- /nick now works correctly
 [11:43AM 5/2/2013]
 	- removed client-sided username checks and made them server-side instead
 		-> previous clients will still be able to connect if they still have the checks

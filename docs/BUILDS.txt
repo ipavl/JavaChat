@@ -9,6 +9,9 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+76:
+	/nick now works properly
+	* Valid clients: 70+
 75:
 	Username validity checks are now server-sided
 	* Valid clients: 70+

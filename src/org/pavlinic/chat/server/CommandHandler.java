@@ -48,8 +48,8 @@ public class CommandHandler {
 			else if (command.startsWith("nick") && !username.equalsIgnoreCase("console")) {
 				// Usage: /nick <name>
 				// Effect: Changes user's name
-				// TODO: Change user's name
 				Server.ClientThread.currentThread().setName(command.substring(5));	// rename thread
+				((ClientThread) Server.ClientThread.currentThread()).username = command.substring(5);
 				Server.broadcast(username + " is now known as " + command.substring(5));
 			}
 			else if (command.startsWith("account")) {
