@@ -30,7 +30,9 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
-[5:36PM 5/2/2013]
+[5:44PM 5/3/2013]
+	- banning the console will no longer affect its use of commands (temporary solution, probably)
+[5:36PM 5/3/2013]
 	- /nick now works correctly
 [11:43AM 5/2/2013]
 	- removed client-sided username checks and made them server-side instead

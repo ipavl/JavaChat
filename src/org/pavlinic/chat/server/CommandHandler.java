@@ -27,7 +27,7 @@ public class CommandHandler {
 			Server.display(username + " issued command: " + command);
 
 			int userRights = 0;
-			if (PermissionsHandler.isBanned(username))	             // banned
+			if (PermissionsHandler.isBanned(username) && !username.equalsIgnoreCase("console"))	// banned
 				userRights = -1;
 			else if (username.equalsIgnoreCase("console"))           // console
 				userRights = 4;
