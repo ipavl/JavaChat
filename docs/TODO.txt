@@ -14,3 +14,13 @@ SERVER
   all the "created" and "loaded" statements (i.e. just 'permissions reloaded').
 * Add a nogui argument flag to ServerGUI so the jar can be run from the command prompt
   instead of having to launch the GUI-less version from a different jar/command.
+  
+
+**********
+*  IDEA  *
+**********
+Since we can edit an individual's thread variables (e.g. username) using
+
+	((ClientThread) Server.ClientThread.currentThread()).FOO = BAR;
+	
+we could easily make this a text-based RPG of some sort (i.e. MUD).
