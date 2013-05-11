@@ -357,6 +357,15 @@ public class Server {
 			    } catch (Exception e) {
 			    	writeMsg("Error: " + e);
 			    }
+			    
+			    
+			    // Send the client our MOTD
+			    BufferedReader br = new BufferedReader(new FileReader("data/motd.txt"));
+			    String line;
+			    while ((line = br.readLine()) != null) {
+			       writeMsg("[Notice] " + line + "\n");
+			    }
+			    br.close();
 				
 			    //display(username + " just connected.");
 			    if (isIdentified || !isRegistered) {

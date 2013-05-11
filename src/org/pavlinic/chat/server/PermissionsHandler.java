@@ -35,7 +35,7 @@ public class PermissionsHandler {
 				
 			    // Administrators
 			    lstAdmin.add("Console".toLowerCase());	// console should always be an administrator
-				inputFile = new BufferedReader(new FileReader("data/users-admins.txt"));
+				inputFile = new BufferedReader(new FileReader("data\\users-admins.txt"));
 			    while ((str = inputFile.readLine()) != null) {
 			        lstAdmin.add(str.toLowerCase());
 			        theCount++;
@@ -45,7 +45,7 @@ public class PermissionsHandler {
 			    theCount = 0;
 			    
 			    // Operators
-				inputFile = new BufferedReader(new FileReader("data/users-ops.txt"));
+				inputFile = new BufferedReader(new FileReader("data\\users-ops.txt"));
 			    while ((str = inputFile.readLine()) != null) {
 			        lstOps.add(str.toLowerCase());
 			        theCount++;
@@ -55,7 +55,7 @@ public class PermissionsHandler {
 			    theCount = 0;
 			    
 			    // Voiced users
-				inputFile = new BufferedReader(new FileReader("data/users-voiced.txt"));
+				inputFile = new BufferedReader(new FileReader("data\\users-voiced.txt"));
 			    while ((str = inputFile.readLine()) != null) {
 			        lstVoice.add(str.toLowerCase());
 			        theCount++;
@@ -65,7 +65,7 @@ public class PermissionsHandler {
 			    theCount = 0;
 			    
 			    // Banned users
-				inputFile = new BufferedReader(new FileReader("data/users-banned.txt"));
+				inputFile = new BufferedReader(new FileReader("data\\users-banned.txt"));
 			    while ((str = inputFile.readLine()) != null) {
 			        lstBanned.add(str.toLowerCase());
 			        theCount++;
@@ -91,19 +91,19 @@ public class PermissionsHandler {
 		BufferedWriter bw = null;
 		try {
 			if(permission == "admin") {
-		    	bw = new BufferedWriter(new FileWriter("data/users-admins.txt", true));
+		    	bw = new BufferedWriter(new FileWriter("data\\users-admins.txt", true));
 		    	lstAdmin.add(username);
 		    }
 			else if(permission == "op") {
-		    	bw = new BufferedWriter(new FileWriter("data/users-ops.txt", true));
+		    	bw = new BufferedWriter(new FileWriter("data\\users-ops.txt", true));
 		    	lstOps.add(username);
 		    }
 		    else if(permission == "voice") {
-		    	bw = new BufferedWriter(new FileWriter("data/users-voiced.txt", true));
+		    	bw = new BufferedWriter(new FileWriter("data\\users-voiced.txt", true));
 		    	lstVoice.add(username);
 		    }
 		    else if(permission == "ban") {
-		    	bw = new BufferedWriter(new FileWriter("data/users-banned.txt", true));
+		    	bw = new BufferedWriter(new FileWriter("data\\users-banned.txt", true));
 		    	lstBanned.add(username);
 		    }
 		    bw.write(username);
@@ -126,14 +126,14 @@ public class PermissionsHandler {
 
 	static void createFiles() {
 		try {
-			boolean success = new File("data/logins-db/").mkdirs();	// make directory
+			boolean success = new File("data\\logins-db").mkdirs();	// make directory
 		    if (success) {
-		        Server.display("Created directory: data/logins-db/");
+		        Server.display("Created directory: data\\logins-db");
 		    } else {
 		        // File already exists
 		    }
 			
-			File file0 = new File("data/logins-db/console.dat");
+			File file0 = new File("data\\logins-db\\console.dat");
 		    // Create file if it does not exist
 		    success = file0.createNewFile();
 		    if (success) {
@@ -141,7 +141,7 @@ public class PermissionsHandler {
 		    } else {
 		        // File already exists
 		    }
-		    File file1 = new File("data/users-ops.txt");
+		    File file1 = new File("data\\users-ops.txt");
 		    // Create file if it does not exist
 		    success = file1.createNewFile();
 		    if (success) {
@@ -149,7 +149,7 @@ public class PermissionsHandler {
 		    } else {
 		        // File already exists
 		    }
-		    File file2 = new File("data/users-voiced.txt");
+		    File file2 = new File("data\\users-voiced.txt");
 		    // Create file if it does not exist
 		    success = file2.createNewFile();
 		    if (success) {
@@ -157,7 +157,7 @@ public class PermissionsHandler {
 		    } else {
 		        // File already exists
 		    }
-		    File file3 = new File("data/users-banned.txt");
+		    File file3 = new File("data\\users-banned.txt");
 		    // Create file if it does not exist
 		    success = file3.createNewFile();
 		    if (success) {
@@ -165,7 +165,7 @@ public class PermissionsHandler {
 		    } else {
 		        // File already exists
 		    }
-		    File file4 = new File("data/users-admins.txt");
+		    File file4 = new File("data\\users-admins.txt");
 		    // Create file if it does not exist
 		    success = file4.createNewFile();
 		    if (success) {
@@ -173,6 +173,20 @@ public class PermissionsHandler {
 		    } else {
 		        // File already exists
 		    }
+		    
+		    File file5 = new File("data\\motd.txt");
+	        // Create file if it does not exist
+            success = file5.createNewFile();
+            if (success) {
+                BufferedWriter motdFile = new BufferedWriter(new FileWriter(file5));
+                motdFile.write("This is the default Message of the Day.");
+                motdFile.newLine();
+                motdFile.write("It can be changed by editing data\\motd.txt.");
+                motdFile.close();
+                Server.display("Created file: " + file5);
+            } else {
+                // File already exists
+            }
 		} catch (IOException e) {
 			Server.display("Could not create file: " + e);
 		}

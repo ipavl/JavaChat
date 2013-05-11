@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+82:
+	MOTD support
+	* Valid clients: 70+
+
 80:
 	Added /msg
 	* Valid clients: 70+
