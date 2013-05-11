@@ -16,8 +16,8 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "76";
-	static String compileDate = "May 3, 2013";
+	static String sVersion = "78";
+	static String compileDate = "May 10, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
 	

@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+78:
+	/nick no longer works if the name is in use or is registered
+	* Valid clients: 70+
+
 76:
 	/nick now works properly
 	* Valid clients: 70+

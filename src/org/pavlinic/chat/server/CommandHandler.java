@@ -50,16 +50,33 @@ public class CommandHandler {
 				// Effect: Changes user's name
 			    boolean isNameFree = true;
 			    
+			    // Check if the desired username is currently in use
                 for(int i = 0; i < Server.clientList.size(); ++i) {
                     ClientThread currentUser = Server.clientList.get(i);
                     if (command.substring(5).equalsIgnoreCase(currentUser.username)) {
-                        sendMessage("The username you specified is unavailable.");
+                        sendMessage("The username you specified is already in use.");
                         isNameFree = false;
                         break;
                     }
                 }
 
-                if(isNameFree) {
+                // Check if the desired username is registered
+                String userAccount = "data/logins-db/" + command.substring(5) + ".dat";
+                boolean isRegistered = (new File(userAccount)).exists();
+                if (isRegistered) {   // the chosen username is registered; verify its password
+                    /*BufferedReader br = new BufferedReader(new FileReader(userAccount));
+                    String dbPassword = br.readLine();
+                    br.close();
+
+                    String password = this.password;    // Should split the string
+                    if (!password.equals(dbPassword)) {
+                        sendMessage("Failed to authenticate as " + command.substring(5));
+                    }*/
+                    sendMessage("The username you specified is registered and cannot be used this way.");
+                    sendMessage("If this name belongs to you, please disconnect and reconnect as it.");
+                }
+                
+                if(isNameFree && !isRegistered) {
                     Server.ClientThread.currentThread().setName(command.substring(5));	// rename thread
 				    ((ClientThread) Server.ClientThread.currentThread()).username = command.substring(5);
 				    Server.broadcast(username + " is now known as " + command.substring(5));
