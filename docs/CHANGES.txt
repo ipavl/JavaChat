@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[11:41PM 5/10/2013]
+	- /nick no longer works if another user is using that name (TODO: check if desired name is registered)
 [5:44PM 5/3/2013]
 	- banning the console will no longer affect its use of commands (temporary solution, probably)
 [5:36PM 5/3/2013]

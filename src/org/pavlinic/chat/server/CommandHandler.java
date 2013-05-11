@@ -48,9 +48,22 @@ public class CommandHandler {
 			else if (command.startsWith("nick") && !username.equalsIgnoreCase("console")) {
 				// Usage: /nick <name>
 				// Effect: Changes user's name
-				Server.ClientThread.currentThread().setName(command.substring(5));	// rename thread
-				((ClientThread) Server.ClientThread.currentThread()).username = command.substring(5);
-				Server.broadcast(username + " is now known as " + command.substring(5));
+			    boolean isNameFree = true;
+			    
+                for(int i = 0; i < Server.clientList.size(); ++i) {
+                    ClientThread currentUser = Server.clientList.get(i);
+                    if (command.substring(5).equalsIgnoreCase(currentUser.username)) {
+                        sendMessage("The username you specified is unavailable.");
+                        isNameFree = false;
+                        break;
+                    }
+                }
+
+                if(isNameFree) {
+                    Server.ClientThread.currentThread().setName(command.substring(5));	// rename thread
+				    ((ClientThread) Server.ClientThread.currentThread()).username = command.substring(5);
+				    Server.broadcast(username + " is now known as " + command.substring(5));
+                }
 			}
 			else if (command.startsWith("account")) {
 				// Usage: /account <parameter> [options]

@@ -126,9 +126,9 @@ public class Server {
 				for(int i = 0; i < clientList.size(); ++i) {
 					ClientThread tc = clientList.get(i);
 					try {
-					tc.sInput.close();
-					tc.sOutput.close();
-					tc.socket.close();
+    					tc.sInput.close();
+    					tc.sOutput.close();
+    					tc.socket.close();
 					}
 					catch(IOException ioE) {
 						// not much I can do
