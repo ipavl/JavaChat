@@ -96,9 +96,11 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	// position at the end
 	void appendRoom(String str) {
 		chat.append(str);
+		chat.setCaretPosition(chat.getText().length() - 1);   // scroll on update
 	}
 	void appendEvent(String str) {
 		event.append(str);
+		event.setCaretPosition(event.getText().length() - 1); // scroll on update
 	}
 	
 	// start or stop where clicked
@@ -113,6 +115,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 			stopStart.setText("Start");
 			return;
 		}
+		
       	// OK start the server	
 		int port;
 		try {
@@ -169,7 +172,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	 */
 	class ServerRunning extends Thread {
 		public void run() {
-			server.start();         // should execute until if fails
+			server.start();         // should execute until it fails
 			// the server failed
 			stopStart.setText("Start");
 			tPortNumber.setEditable(true);

@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[2:27PM 5/11/2013]
+	- text areas in the GUI server now automatically scroll if necessary
 [12:02AM 5/11/2013]
 	- if the username the user is connecting with is already in use they will be denied
 [11:50PM 5/10/2013]
