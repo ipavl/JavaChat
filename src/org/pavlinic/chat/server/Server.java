@@ -414,8 +414,6 @@ public class Server {
         					                    " compiled on " + compileDate + "\n");
         					        else if (message.startsWith("/") && message.length() > 1)	        // command
         					            CommandHandler.processCommand(username, message.substring(1));
-        					        else if (message.startsWith("!"))	                                // command for the bot
-        					            ServerBot.processCommand(username, message.substring(1));
         					        else	                                                            // message
         					        {
         					            if (PermissionsHandler.isOperator(username))	                // operator

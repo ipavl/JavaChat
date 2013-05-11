@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[3:15PM 5/11/2013]
+	- removed ServerBot since it wasn't really being used
 [3:06PM 5/11/2013]
 	- added /msg support to privately message another user
 	- updated writeMsg() to include the time by default
