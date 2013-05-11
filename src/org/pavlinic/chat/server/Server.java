@@ -16,8 +16,8 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "78";
-	static String compileDate = "May 10, 2013";
+	static String sVersion = "79";
+	static String compileDate = "May 11, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
 	
@@ -315,6 +315,16 @@ public class Server {
 	            } else {
 	                isValidUsername = true;
 	            }
+	            
+	            // Check if the desired username is currently in use
+                for(int i = 0; i < Server.clientList.size(); ++i) {
+                    ClientThread currentUser = Server.clientList.get(i);
+                    if (username.equalsIgnoreCase(currentUser.username)) {
+                        writeMsg("The username you specified is already in use.\n");
+                        isValidUsername = false;
+                        return;
+                    }
+                }
 
 				// set the thread's name equal to the user's (easier to interact with)
 				this.setName(username);

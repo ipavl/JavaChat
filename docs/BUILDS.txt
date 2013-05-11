@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+79:
+	If the username is already in use that a client is connecting with, they will be denied.
+	* Valid clients: 70+
+
 78:
 	/nick no longer works if the name is in use or is registered
 	* Valid clients: 70+
