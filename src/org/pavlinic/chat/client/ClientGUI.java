@@ -20,7 +20,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-    final JFrame frame = new JFrame("JDialog Demo");
+    final JFrame frame = new JFrame("Chat");
 	// if it is for connection
 	private boolean connected;
 	// the Client object

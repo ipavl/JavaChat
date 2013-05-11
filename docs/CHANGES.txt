@@ -30,6 +30,9 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[3:06PM 5/11/2013]
+	- added /msg support to privately message another user
+	- updated writeMsg() to include the time by default
 [2:27PM 5/11/2013]
 	- text areas in the GUI server now automatically scroll if necessary
 [12:02AM 5/11/2013]

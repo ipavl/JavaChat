@@ -9,6 +9,7 @@ package org.pavlinic.chat.server;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 
 public class ServerGUI extends JFrame implements ActionListener, WindowListener {
 	
@@ -95,11 +96,11 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	// append message to the two JTextArea
 	// position at the end
 	void appendRoom(String str) {
-		chat.append(str);
+		chat.append(Server.dateFormat.format(new Date()) + " " + str);
 		chat.setCaretPosition(chat.getText().length() - 1);   // scroll on update
 	}
 	void appendEvent(String str) {
-		event.append(str);
+		event.append(Server.dateFormat.format(new Date()) + " " + str);
 		event.setCaretPosition(event.getText().length() - 1); // scroll on update
 	}
 	

@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.pavlinic.chat.AeSimpleSHA1;
@@ -162,6 +163,27 @@ public class CommandHandler {
 				// Usage: /reload
 				// Effect: Reloads server permissions
 				PermissionsHandler.initPermissions();
+			}
+			else if (command.startsWith("msg")) {
+			    String[] elements = command.split(" ");
+			    String recipient = elements[1];
+			    String[] words = Arrays.copyOfRange(elements, 2, elements.length);
+			    
+			    // Reconstruct the message
+			    StringBuilder message = new StringBuilder();
+			    for(String current : words) {
+			        message.append(current + " ");
+			    }
+
+			    // Find the recipient and send them the message
+                for(int i = 0; i < Server.clientList.size(); ++i) {
+                    ClientThread currentUser = Server.clientList.get(i);
+                    if (recipient.equalsIgnoreCase(currentUser.username)) {
+                        currentUser.writeMsg("!PRIVATE! --> " + username + ": " + message.toString().trim() + "\n");
+                        sendMessage("!PRIVATE! <-- " + recipient + ": " + message.toString().trim());
+                        break;
+                    }
+                }
 			}
 			/*else if (command.startsWith("mute") && ServerPermissionsHandler.isOperator(username) || ServerPermissionsHandler.isAdministrator(username)) {
 				// Usage: /mute <name>

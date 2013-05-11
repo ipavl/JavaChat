@@ -16,7 +16,7 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "79";
+	static String sVersion = "80";
 	static String compileDate = "May 11, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
@@ -31,7 +31,7 @@ public class Server {
 	private static ServerGUI isGUI;
 	
 	// to display time
-	static SimpleDateFormat dateFormat;
+	public static SimpleDateFormat dateFormat;
 	
 	// the port number to listen for connection
 	public static int port;
@@ -142,7 +142,7 @@ public class Server {
 		
 		// something went wrong
 		catch (IOException e) {
-            String msg = dateFormat.format(new Date()) + " exception on new ServerSocket: " + e + "\n";
+            String msg = "exception on new ServerSocket: " + e + "\n";
 			display(msg);
 		}
 	}
@@ -166,7 +166,7 @@ public class Server {
 	 * Display an event (not a message) to the console or the GUI
 	 */
 	public static void display(String msg) {
-		String event = dateFormat.format(new Date()) + " " + msg;
+		String event = msg;
 		if(isGUI == null)
 			System.out.println(event);
 		else
@@ -178,9 +178,7 @@ public class Server {
 	 *  Broadcast a message to all clients
 	 */
 	public static synchronized void broadcast(String message) {
-		// add HH:mm:ss and \n to the message
-		String time = dateFormat.format(new Date());
-		String messageLf = time + " " + message + "\n";
+		String messageLf = message + "\n";
 		
 		// display message on console or GUI
 		if(isGUI == null)
@@ -485,9 +483,10 @@ public class Server {
 				close();
 				return false;
 			}
+			
 			// write the message to the stream
 			try {
-				sOutput.writeObject(msg);
+				sOutput.writeObject(dateFormat.format(new Date()) + " " + msg);
 			}
 			// if an error occurs, do not abort just inform the user
 			catch(IOException e) {

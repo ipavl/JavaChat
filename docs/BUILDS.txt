@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+80:
+	Added /msg
+	* Valid clients: 70+
+
 79:
 	If the username is already in use that a client is connecting with, they will be denied.
 	* Valid clients: 70+
