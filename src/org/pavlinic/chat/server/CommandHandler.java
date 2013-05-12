@@ -46,6 +46,11 @@ public class CommandHandler {
 				// Effect: Outputs given message as " * <Name> says hello"
 				Server.broadcast("* " + username + " " + command.substring(3));
 			}
+			else if (command.equalsIgnoreCase("motd")) {
+			    // Usage: /motd
+			    // Effect: Shows the user the message of the day
+			    sendMessage(LoginHandler.getMOTD());
+			}
 			else if (command.startsWith("nick") && !username.equalsIgnoreCase("console")) {
 				// Usage: /nick <name>
 				// Effect: Changes user's name

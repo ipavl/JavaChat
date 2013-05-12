@@ -16,8 +16,8 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "85";
-	static String compileDate = "May 11, 2013";
+	static String sVersion = "86";
+	static String compileDate = "May 12, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
 	
@@ -298,13 +298,13 @@ public class Server {
 				cVersion = (int) sInput.readObject();
 				
 				// Do some preliminary checks
-				if(!LoginHandler.isValidVersion(cVersion, minClientVer, username)) {
+				if(!LoginHandler.isValidVersion(cVersion, minClientVer, username)) {    // client version check
 		            writeMsg("Outdated client! Please update your client and try connecting again.\n");
 		            display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
 		            isValidVersion = false;
 				}
 				
-				if(!LoginHandler.isValidUsername(username)) {
+				if(!LoginHandler.isValidUsername(username)) {   // valid username check
 		            writeMsg("Invalid username. Names cannot be longer than 16 characters or contain the word \"Console\" or\n");
 		            writeMsg("the following characters: @ + & ~ #\n");
 		            writeMsg("Change your username and try again.\n");
@@ -312,7 +312,7 @@ public class Server {
 		            isValidUsername = false;
 				}
 				
-				if(!LoginHandler.isNameFree(username)) {
+				if(!LoginHandler.isNameFree(username)) {    // free username check
 				    writeMsg("The username you specified is already in use.\n");
 				    isNameFree = false;
 				}
@@ -421,11 +421,13 @@ public class Server {
         					                    writeMsg("Cannot send message to channel: channel mode +m\n");
         					        }
         					    }
-        					    else
+        					    else {
+        					        // TODO: Allow banned users to use /msg to query an operator about their ban (maybe)
         					        display(username + " tried sending message/command while banned: " + message);
+        					    }
+        					    
         					    break;
     						case PacketHandler.LOGOUT:
-        					    //display(username + " disconnected with a LOGOUT message.");
         					    broadcast(username + " disconnected (LOGOUT).");
         					    isServerRunning = false;
         					    break;
@@ -441,8 +443,7 @@ public class Server {
     				}
     			}
 			}
-			// remove myself from the arrayList containing the list of the
-			// connected Clients
+			// remove myself from the arrayList containing the list of the connected clients
 			remove(id);
 			close();
 		}

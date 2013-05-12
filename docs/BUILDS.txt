@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+86:
+	Added /motd
+	* Valid clients: 70+
+
 85:
 	Moved a lot of the login code into functions in LoginHandler.java
 	* Valid clients: 70+
