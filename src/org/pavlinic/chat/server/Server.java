@@ -16,7 +16,7 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "80";
+	static String sVersion = "85";
 	static String compileDate = "May 11, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
@@ -165,7 +165,7 @@ public class Server {
 	/*
 	 * Display an event (not a message) to the console or the GUI
 	 */
-	public static void display(String msg) {
+	static void display(String msg) {
 		String event = msg;
 		if(isGUI == null)
 			System.out.println(event);
@@ -272,16 +272,20 @@ public class Server {
 		// user verification booleans
         boolean isRegistered = false;
 		boolean isIdentified = false;
-		boolean isValidVersion = false;
-		boolean isValidUsername = false;
+		
+		boolean isValidVersion = true;
+		boolean isValidUsername = true;
+		boolean isNameFree = true;
+		
+		int authResponse = -1;
 		
 		// Constructor
 		ClientThread(Socket socket) {
 			// a unique id
 			id = ++clientID;
 			this.socket = socket;
+			
 			/* Creating both Data Streams */
-			//System.out.println("Thread trying to create object input/output streams...");	// debug
 			try
 			{
 				// create output first
@@ -293,81 +297,59 @@ public class Server {
 				password = (String) sInput.readObject();
 				cVersion = (int) sInput.readObject();
 				
-				if(cVersion >= minClientVer)    // version check
-				    isValidVersion = true;
-				else {
-                    writeMsg("Outdated client! Please update your client and try connecting again.\n");
-                    display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
-                    isValidVersion = false;
-                    return;
+				// Do some preliminary checks
+				if(!LoginHandler.isValidVersion(cVersion, minClientVer, username)) {
+		            writeMsg("Outdated client! Please update your client and try connecting again.\n");
+		            display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
+		            isValidVersion = false;
 				}
-                    
-	            if (username.equalsIgnoreCase("console") || username.contains("@") || username.contains("+") ||  
-	                    username.contains("&") || username.contains("~") || username.contains("#") || 
-	                    username.length() > 16) {
-	                writeMsg("Invalid username. Names cannot be longer than 16 characters or contain the word \"Console\" or\n");
-	                writeMsg("the following characters: @ + & ~ #\n");
-	                writeMsg("Change your username and try again.\n");
-	                display("Disconnecting user: " + username + " (invalid username)");
-	                return;
-	            } else {
-	                isValidUsername = true;
-	            }
+				
+				if(!LoginHandler.isValidUsername(username)) {
+		            writeMsg("Invalid username. Names cannot be longer than 16 characters or contain the word \"Console\" or\n");
+		            writeMsg("the following characters: @ + & ~ #\n");
+		            writeMsg("Change your username and try again.\n");
+		            display("Disconnecting user: " + username + " (invalid username)");
+		            isValidUsername = false;
+				}
+				
+				if(!LoginHandler.isNameFree(username)) {
+				    writeMsg("The username you specified is already in use.\n");
+				    isNameFree = false;
+				}
 	            
-	            // Check if the desired username is currently in use
-                for(int i = 0; i < Server.clientList.size(); ++i) {
-                    ClientThread currentUser = Server.clientList.get(i);
-                    if (username.equalsIgnoreCase(currentUser.username)) {
-                        writeMsg("The username you specified is already in use.\n");
-                        isValidUsername = false;
-                        return;
-                    }
-                }
+	            // Stop if there's a problem.
+	            if (!isValidVersion || !isValidUsername || !isNameFree) {
+	                return;
+	            }
 
 				// set the thread's name equal to the user's (easier to interact with)
 				this.setName(username);
 				
-				// authentication
-			    try {
-			    	String userAccount = "data/logins-db/" + username + ".dat";
-			    	boolean exists = (new File(userAccount)).exists();
-			    	if (exists) {	// the chosen username is registered; verify its password
-				    	writeMsg("Logging in...");
-					    BufferedReader br = new BufferedReader(new FileReader(userAccount));
-				        String dbPassword = br.readLine();
-				        br.close();
-	
-				        String password = this.password;
-				        // compare
-				        if (!password.equals(dbPassword)) {
-				        	writeMsg(" failed.\nInvalid login. Please check your username and password.\n");
-				        	writeMsg("If you do not have an account, that name is likely registered already.\n");
-				        	isIdentified = false;
-				        	isRegistered = true;
-				        }
-				        else {
-				        	writeMsg(" success!\nSuccessfully identified as " + username + "\n");
-				        	isIdentified = true;
-				        	isRegistered = true;
-				        }
-			    	} else {
-			    		isRegistered = false;	// username is not registered; go straight to connecting
-			    	}
-			        	
-			    } catch (Exception e) {
-			    	writeMsg("Error: " + e);
-			    }
-			    
-			    
-			    // Send the client our MOTD
-			    BufferedReader br = new BufferedReader(new FileReader("data/motd.txt"));
-			    String line;
-			    while ((line = br.readLine()) != null) {
-			       writeMsg("[Notice] " + line + "\n");
-			    }
-			    br.close();
+				// Check if the chosen username is registered, and verify our password if necessary
+				writeMsg("Logging in... \n");
+				authResponse = LoginHandler.authenticate(username, password);
 				
-			    //display(username + " just connected.");
+			    if (authResponse == -1) {
+			        writeMsg("The login server returned an invalid response.\n");
+			        return;
+			    } else if (authResponse == 0) {
+			        writeMsg("This name is available! Register it with /account register <password>\n");
+			        isRegistered = false;
+			    } else if (authResponse == 1) {
+                    writeMsg("Failed to login successfully. Please check your username and password.\n");
+                    writeMsg("If you do not have an account, that name is likely registered already.\n");
+			        isRegistered = true;
+			        isIdentified = false;
+			        return;
+			    } else if (authResponse == 2) {
+			        writeMsg("Successfully identified as " + username + "\n");
+			        isRegistered = true;
+			        isIdentified = true;
+			    }
+			    
+			    // Send the MOTD to the client
+			    writeMsg(LoginHandler.getMOTD());
+				
 			    if (isIdentified || !isRegistered) {
 					broadcast(username + " connected.");
 					if (PermissionsHandler.isBanned(username))
@@ -384,10 +366,11 @@ public class Server {
 				display("Exception creating new input/output streams: " + e);
 				return;
 			}
-			// have to catch ClassNotFoundException
-			// but I read a String, I am sure it will work
 			catch (ClassNotFoundException e) {
+		        // have to catch ClassNotFoundException
+	            // but I read a String, I am sure it will work
 			}
+			
             logonDate = new Date().toString() + "\n";
 		}
 

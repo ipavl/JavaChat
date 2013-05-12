@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[9:54PM 5/11/2013]
+	- moved a lot of the login code to individual functions
 [5:03PM 5/11/2013]
 	- added MOTD support
 [3:15PM 5/11/2013]
