@@ -56,14 +56,10 @@ public class CommandHandler {
 				// Effect: Changes user's name
 			    boolean isNameFree = true;
 			    
-			    // Check if the desired username is currently in use
-                for(int i = 0; i < Server.clientList.size(); ++i) {
-                    ClientThread currentUser = Server.clientList.get(i);
-                    if (command.substring(5).equalsIgnoreCase(currentUser.username)) {
-                        sendMessage("The username you specified is already in use.");
-                        isNameFree = false;
-                        break;
-                    }
+			    // Check if the specified username is in use
+                if(!LoginHandler.isNameFree(username)) {    // free username check
+                    sendMessage("The username you specified is already in use.");
+                    isNameFree = false;
                 }
 
                 // Check if the desired username is registered
