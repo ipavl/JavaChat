@@ -298,7 +298,7 @@ public class Server {
 				cVersion = (int) sInput.readObject();
 				
 				// Do some preliminary checks
-				if(!LoginHandler.isValidVersion(cVersion, minClientVer, username)) {    // client version check
+				if(!LoginHandler.isValidVersion(cVersion, minClientVer)) {    // client version check
 		            writeMsg("Outdated client! Please update your client and try connecting again.\n");
 		            display("Disconnecting user: " + username + " (outdated client: " + cVersion + ")");
 		            isValidVersion = false;

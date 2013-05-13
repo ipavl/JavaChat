@@ -12,7 +12,7 @@ public class LoginHandler {
     /*
      * This function will check if the client's version is valid.
      */
-    public static boolean isValidVersion(int client, int minimum, String username) {
+    public static boolean isValidVersion(int client, int minimum) {
         if(client >= minimum)    // version check
             return true;
         else {
