@@ -9,6 +9,10 @@ server-build:
 	* Valid clients: allowed client versions
 ********************************************
 
+88:
+	/account password and server has timestamps again
+	* Valid clients: 70+
+
 86:
 	Added /motd
 	* Valid clients: 70+

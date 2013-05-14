@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[8:12PM 5/13/2013]
+	- server log now has timestamps again
 [8:04PM 5/13/2013]
 	- /account password now works
 	- /account commands no longer show up "raw" in the server console (i.e. password is not displayed)

@@ -16,7 +16,7 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "87";
+	static String sVersion = "88";
 	static String compileDate = "May 13, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
@@ -48,7 +48,7 @@ public class Server {
 	static void logEvent(String output) {
 		try {
 			FileWriter fw = new FileWriter ("server.log", true);	// (file, append)
-			fw.write(output + "\n");	// appends the string to the file + new line
+			fw.write(dateFormat.format(new Date()) + " " + output + "\n");	// appends the string to the file + new line
 			fw.close();  // close the file
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -62,7 +62,7 @@ public class Server {
 	static void logChat(String output) {
 		try {
 			FileWriter fw = new FileWriter ("server.log", true);	// (file, append)
-			fw.write(output);	// appends the string to the file
+			fw.write(dateFormat.format(new Date()) + " " + output);	// appends the string to the file
 			fw.close();  // close the file
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

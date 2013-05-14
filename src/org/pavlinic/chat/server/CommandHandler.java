@@ -70,19 +70,17 @@ public class CommandHandler {
                 // Check if the desired username is registered
                 String userAccount = "data/logins-db/" + command.substring(5) + ".dat";
                 boolean isRegistered = (new File(userAccount)).exists();
+                
                 if (isRegistered) {   // the chosen username is registered; verify its password
+                    // TODO: Allow switching to a registered nick if authenticate passes
                     /*BufferedReader br = new BufferedReader(new FileReader(userAccount));
                     String dbPassword = br.readLine();
-                    br.close();
-
-                    String password = this.password;    // Should split the string
-                    if (!password.equals(dbPassword)) {
-                        sendMessage("Failed to authenticate as " + command.substring(5));
-                    }*/
+                    br.close();*/
                     sendMessage("The username you specified is registered and cannot be used this way.");
                     sendMessage("If this name belongs to you, please disconnect and reconnect as it.");
                 }
                 
+                // The name is not in use and is not registered
                 if(isNameFree && !isRegistered) {
                     Server.ClientThread.currentThread().setName(command.substring(5));	// rename thread
 				    ((ClientThread) Server.ClientThread.currentThread()).username = command.substring(5);
@@ -185,6 +183,8 @@ public class CommandHandler {
 				PermissionsHandler.initPermissions();
 			}
 			else if (command.startsWith("msg")) {
+			    // Usage: /msg <recipient> <message>
+			    // Effect: Privately send another user a message (still logged in console log)
 			    String[] elements = command.split(" ");
 			    String recipient = elements[1];
 			    String[] words = Arrays.copyOfRange(elements, 2, elements.length);
