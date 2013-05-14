@@ -14,27 +14,32 @@ import java.util.Date;
 public class ServerGUI extends JFrame implements ActionListener, WindowListener {
 	
 	private static final long serialVersionUID = 1L;
+
 	// the stop and start buttons
 	private JButton stopStart;
+
 	// JTextArea for the chat room and the events
 	private JTextArea chat, event;
-	// The port number
+
+	// the port number and command entry text areas
 	private JTextField tPortNumber;
-	// my server
-	private Server server;
 	private JTextField sendCommand;
 	
+	// my server
+	private Server server;
 	
-	// server constructor that receive the port to listen to for connection as parameter
+	// server constructor that receives the port to listen on for connection as parameter
 	ServerGUI(int port) {
 		super("Chat Server");
 		server = null;
+		
 		// in the NorthPanel the PortNumber the Start and Stop buttons
 		JPanel north = new JPanel();
 		north.add(new JLabel("Port number: "));
 		tPortNumber = new JTextField("1500");
 		tPortNumber.setColumns(4);
 		north.add(tPortNumber);
+		
 		// to stop or start the server, we start with "Start"
 		stopStart = new JButton("Start");
 		stopStart.addActionListener(this);
@@ -49,15 +54,18 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 					String cmd = sendCommand.getText();
 					if (cmd.startsWith("/"))	// accept both / and non-/ commands
 						cmd = cmd.substring(1);
+					
 					// empty message ignore it
 					if(cmd.length() == 0)
 						return;
+					
 					CommandHandler.processCommand("Console", cmd);	// process command
 					sendCommand.setText("");
 					return;
 				}
 			}
 		});
+		
 		sendCommand.addMouseListener(new MouseAdapter() {	// clear box on mouse click
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -66,6 +74,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 				}
 			}
 		});
+		
 		sendCommand.setEditable(false);
 		sendCommand.setText("Execute commands here when the server is running.");
 		north.add(sendCommand);
@@ -75,13 +84,15 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 		JPanel center = new JPanel(new GridLayout(2,1));
 		chat = new JTextArea(0,0);
 		chat.setEditable(false);
-		//appendRoom("Chat log\n");
+		
+		// Chat logging area
 		JScrollPane scrollPane = new JScrollPane(chat);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		center.add(scrollPane);
 		event = new JTextArea(0,0);
 		event.setEditable(false);
-		//appendEvent("Events log\n");
+		
+		// Event logging area
 		JScrollPane scrollPane_1 = new JScrollPane(event);
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		center.add(scrollPane_1);	
@@ -93,12 +104,12 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 		setVisible(true);
 	}		
 
-	// append message to the two JTextArea
-	// position at the end
+	// append message to the two JTextAreas, scroll afterwards
 	void appendRoom(String str) {
 		chat.append(Server.dateFormat.format(new Date()) + " " + str);
 		chat.setCaretPosition(chat.getText().length() - 1);   // scroll on update
 	}
+	
 	void appendEvent(String str) {
 		event.append(Server.dateFormat.format(new Date()) + " " + str);
 		event.setCaretPosition(event.getText().length() - 1); // scroll on update
@@ -126,8 +137,10 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 			appendEvent("Invalid port number");
 			return;
 		}
-		// ceate a new Server
+		
+		// create a new Server
 		server = new Server(port, this);
+		
 		// and start it as a thread
 		new ServerRunning().start();
 		stopStart.setText("Stop");
@@ -156,6 +169,7 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 			}
 			server = null;
 		}
+		
 		// dispose the frame
 		dispose();
 		System.exit(0);
@@ -183,4 +197,3 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	}
 
 }
-
