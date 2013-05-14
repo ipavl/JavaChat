@@ -24,10 +24,10 @@ public class Client  {
 	private ObjectOutputStream sOutput;		// to write on the socket
 	private Socket socket;
 
-	// if I use a GUI or not
+	// if the client is in GUI mode
 	private ClientGUI isGUI;
 	
-	// the server, the port and the username
+	// the server, the port and the username/password
 	private String server, username, password;
 	private int port;
 

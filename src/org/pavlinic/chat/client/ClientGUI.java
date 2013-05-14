@@ -21,10 +21,13 @@ public class ClientGUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
     final JFrame frame = new JFrame("Chat");
-	// if it is for connection
+    
+	// boolean of whether or not we are currently connected
 	private boolean connected;
+	
 	// the Client object
 	private Client client;
+	
 	// the default port number
 	private int defaultPort;
 	
@@ -99,6 +102,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 		txtMessage.setText("Click here to set your login credentials.");
 		txtMessage.setBounds(0, 423, 584, 29);
 		txtMessage.setColumns(10);
+		
 		txtMessage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -125,6 +129,7 @@ public class ClientGUI extends JFrame implements ActionListener {
                 }
 			}
 		});
+		
 		txtMessage.addKeyListener(new KeyAdapter() {	// set username when not connected
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -140,6 +145,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 				}
 			}
 		});
+		
 		getContentPane().add(txtMessage);
 		
 		scrollPane = new JScrollPane();
@@ -168,65 +174,68 @@ public class ClientGUI extends JFrame implements ActionListener {
 		btnDisconnect.setEnabled(false);
 		btnUserlist.setEnabled(false);
 		//txtMessage.setText("");
+		
 		// reset port number and host name as a construction time
 		txtPort.setText("" + defaultPort);
 		txtServer.setText(defaultHost);
+		
 		// let the user change them
 		txtServer.setEditable(true);
 		txtPort.setEditable(true);
+		
 		// don't react to a <CR> after the username
 		txtMessage.removeActionListener(this);
 		connected = false;
 	}
 		
-	void connect() {
-		// connection request
-		/*Random r = new Random();
-		int randint = r.nextInt(50);
-		String username = "Guest" + randint;*/
-	    
-		// empty username ignore it
+	void connect() {   // connection request
+		// empty username -> ignore it and cancel
 		if(username.length() == 0)
 			return;
 		
-		// empty serverAddress ignore it
+		// empty serverAddress -> ignore it and cancel
 		String server = txtServer.getText().trim();
 		if(server.length() == 0)
 			return;
 		
-		// empty or invalid port number, ignore it
+		// empty or invalid port number -> ignore it and cancel
 		String portNumber = txtPort.getText().trim();
 		if(portNumber.length() == 0)
 			return;
+		
+		// Variable which will be assigned the parsed port number
 		int port = 0;
 		
 		try {
 			port = Integer.parseInt(portNumber);
 		}
 		catch(Exception en) {
-			return;   // nothing I can do if port number is not valid
+			return;   // nothing I can do if the port number is not valid
 		}
 
 		// try creating a new Client with GUI
 		client = new Client(server, port, username, password, Client.getClientVer(), this);
-		// test if we can start the Client
+		// test if we can start the Client -> if not, cancel
 		if(!client.start()) 
 			return;
+		
 		txtMessage.setText("");
 		connected = true;
 		
 		// disable login button
 		btnConnect.setEnabled(false);
+		
 		// enable the 2 buttons
 		btnDisconnect.setEnabled(true);
 		btnUserlist.setEnabled(true);
+		
 		// disable the Server and Port JTextField
 		txtServer.setEditable(false);
 		txtPort.setEditable(false);
+		
 		// Action listener for when the user enter a message
 		txtMessage.addActionListener(this);
 	}
-
 	
 	/*
 	* Button or JTextField clicked
@@ -253,11 +262,12 @@ public class ClientGUI extends JFrame implements ActionListener {
 
 		// coming from the JTextField
 		if(connected) {
-			// TODO: Data entry checks
 			String msg = txtMessage.getText();
+			
 			// empty message ignore it
 			if(msg.length() == 0)
 				return;
+			
 			// just have to send the message
 			client.sendMessage(new PacketHandler(PacketHandler.MESSAGE, txtMessage.getText()));				
 			txtMessage.setText("");
@@ -271,4 +281,3 @@ public class ClientGUI extends JFrame implements ActionListener {
 		new ClientGUI("localhost", 1500);
 	}
 }
-
