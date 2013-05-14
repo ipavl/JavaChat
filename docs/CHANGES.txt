@@ -30,6 +30,9 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[8:04PM 5/13/2013]
+	- /account password now works
+	- /account commands no longer show up "raw" in the server console (i.e. password is not displayed)
 [5:42PM 5/12/2013]
 	- added /motd
 [9:54PM 5/11/2013]

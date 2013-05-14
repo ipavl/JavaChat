@@ -25,8 +25,13 @@ public class CommandHandler {
 	
 	public static void processCommand(String username, String command) {
 		try {
-			Server.display(username + " issued command: " + command);
-
+		    // Log commands, but don't show raw /account commands for confidentiality reasons
+		    if(!command.startsWith("account")) {
+		        Server.display(username + " issued command: " + command);
+		    } else if (command.startsWith("account")) {
+		        Server.display(username + " issued command: " + command.substring(0, 17) + " ******");
+		    }
+			
 			int userRights = 0;
 			if (PermissionsHandler.isBanned(username) && !username.equalsIgnoreCase("console"))	// banned
 				userRights = -1;
@@ -105,6 +110,20 @@ public class CommandHandler {
 			    		sendMessage("If you own this account and want to change its password,");
 			    		sendMessage("please use /account password <newpassword>");
 			    	}
+				} else if (service.startsWith("password")) {
+                    String userAccount = "data/logins-db/" + username + ".dat";
+                    boolean exists = (new File(userAccount)).exists();
+                    if (!exists) {
+                        sendMessage("This account is not registered. Register it with /account register <password>");
+                    }
+                    else {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(userAccount, false));
+                        bw.write(AeSimpleSHA1.SHA1(service.substring(9)));  // hash the password
+                        bw.flush();
+                        bw.close();
+                        // TODO: Require old password before changing?
+                        sendMessage("Your password has been changed successfully.");
+                    }
 				}
 			}
 			else if (command.startsWith("say") && userRights == 4) {
@@ -186,40 +205,6 @@ public class CommandHandler {
                     }
                 }
 			}
-			/*else if (command.startsWith("mute") && ServerPermissionsHandler.isOperator(username) || ServerPermissionsHandler.isAdministrator(username)) {
-				// Usage: /mute <name>
-				// Effect: Silences a user
-				//int id = Integer.parseInt(command.substring(5));
-			    Thread[] tList = new Thread[Thread.activeCount()];
-
-			    int numThreads = Thread.enumerate(tList);
-
-			    for (int i = 0; i < numThreads; i++) {
-			    	if(tList[i].getName().equals(command.substring(5))) {
-				    	tList[i].suspend();	// "mute" the user by suspending their thread
-						//Server.broadcast(command.substring(5) + " has been muted by " + username);
-						Server.broadcast(username + " sets mode: +q " + command.substring(5));	// IRC version
-				    	break;
-				    }
-			    }
-			}
-			else if (command.startsWith("kick") && ServerPermissionsHandler.isOperator(username) || ServerPermissionsHandler.isAdministrator(username)) {
-				// Usage: /kick <name>
-				// Effect: Disconnects a user
-			    Thread[] tList = new Thread[Thread.activeCount()];
-
-			    int numThreads = Thread.enumerate(tList);
-
-			    for (int i = 0; i < numThreads; i++) {
-			    	if(tList[i].getName().equals(command.substring(5))) {
-				    	int id = (int) tList[i].getId();	// get user id
-				    	tList[i].suspend();	// "mute" the user by suspending their thread
-				    	Server.remove(id);	// "deafen" the user by removing them from the client list
-						Server.broadcast(command.substring(5) + " has been kicked from the chat by " + username);
-				        break;
-				    }
-			    }
-			}*/
 			else if (command.equalsIgnoreCase("stop") && userRights > 2) {
 				// Usage: /stop
 				// Effect: Stops the server
