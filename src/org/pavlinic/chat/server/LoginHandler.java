@@ -68,9 +68,9 @@ public class LoginHandler {
 
                 // compare
                 if (!password.equals(dbPassword)) {
-                    return 1;
+                    return 1;	// unsuccessful authentication for a registered name
                 } else {
-                    return 2;
+                    return 2;	// successful authentication
                 }
             } else {
                 return 0;   // the account is not registered
