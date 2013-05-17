@@ -66,7 +66,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 		getContentPane().add(lblServer);
 		
 		txtServer = new JTextField();
-		txtServer.setText("localhost");
+		txtServer.setText("localhost");   // TODO: Save user-set host on disconnect
 		txtServer.setBounds(58, 8, 91, 20);
 		txtServer.setColumns(10);
 		getContentPane().add(txtServer);

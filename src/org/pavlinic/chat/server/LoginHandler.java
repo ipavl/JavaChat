@@ -59,7 +59,7 @@ public class LoginHandler {
      */
     public static int authenticate(String username, String password) {
         try {
-            String userAccount = "data/logins-db/" + username + ".dat";
+            String userAccount = "data" + File.separator + "logins-db" + File.separator + username + ".dat";
             boolean exists = (new File(userAccount)).exists();
             if (exists) {   // the chosen username is registered; verify its password
                 BufferedReader br = new BufferedReader(new FileReader(userAccount));
@@ -84,7 +84,7 @@ public class LoginHandler {
      * This function will return the MOTD.
      */
     public static String getMOTD() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("data/motd.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("data" + File.separator + "motd.txt"));
         String line;
         StringBuilder motd = new StringBuilder();
         
