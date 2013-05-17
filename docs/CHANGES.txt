@@ -30,6 +30,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[10:44PM 5/16/2013]
+	- file and directory I/O is now more friendly towards non-Windows platforms
 [8:12PM 5/13/2013]
 	- server log now has timestamps again
 [8:04PM 5/13/2013]
