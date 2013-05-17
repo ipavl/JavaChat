@@ -15,9 +15,8 @@ public class LoginHandler {
     public static boolean isValidVersion(int client, int minimum) {
         if(client >= minimum)    // version check
             return true;
-        else {
+        else
             return false;
-        }
     }
     
     /*
