@@ -2,6 +2,8 @@ CHANGELOG
 =========
 
 CLIENT
+[11:37PM 5/17/2013]
+	- the server and port fields are no longer reset on disconnection
 [11:43AM 5/2/2013]
 	- removed client-sided username checks and made them server-side instead
 [11:32AM 5/2/2013]

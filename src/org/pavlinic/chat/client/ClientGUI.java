@@ -28,11 +28,6 @@ public class ClientGUI extends JFrame implements ActionListener {
 	// the Client object
 	private Client client;
 	
-	// the default port number
-	private int defaultPort;
-	
-	private String defaultHost;
-	
 	private JTextArea lstChat;
 	
 	private JTextField txtServer;
@@ -53,8 +48,6 @@ public class ClientGUI extends JFrame implements ActionListener {
 	ClientGUI(String host, int port) {
 
 		super("Chat");
-		defaultPort = port;
-		defaultHost = host;
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(590, 480);
@@ -173,11 +166,6 @@ public class ClientGUI extends JFrame implements ActionListener {
 		btnConnect.setEnabled(true);
 		btnDisconnect.setEnabled(false);
 		btnUserlist.setEnabled(false);
-		//txtMessage.setText("");
-		
-		// reset port number and host name as a construction time
-		txtPort.setText("" + defaultPort);
-		txtServer.setText(defaultHost);
 		
 		// let the user change them
 		txtServer.setEditable(true);

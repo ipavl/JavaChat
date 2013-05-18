@@ -17,7 +17,7 @@ import org.pavlinic.chat.PacketHandler;
 
 public class Client  {
 
-    private static int clientVer = 75;      // the client version
+    private static int clientVer = 76;      // the client version
     
 	// for I/O
 	private ObjectInputStream sInput;		// to read from the socket
