@@ -250,7 +250,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 
 		// coming from the JTextField
 		if(connected) {
-			String msg = txtMessage.getText();
+			String msg = txtMessage.getText().trim();
 			
 			// empty message ignore it
 			if(msg.length() == 0)
