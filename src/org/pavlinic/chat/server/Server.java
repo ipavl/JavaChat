@@ -78,15 +78,19 @@ public class Server {
 		this(port, null);
 	}
 	
-	public Server(int port, ServerGUI sg) {
+	public Server(int port, ServerGUI isGUI) {
 		// GUI or not
-		Server.isGUI = sg;
+		Server.isGUI = isGUI;
+		
 		// the port
 		Server.port = port;
+		
 		// to display [MMM-dd HH:mm:ss] (24-hr)
 		dateFormat = new SimpleDateFormat("[MMM-dd HH:mm:ss]");
+		
 		// to display [MMM-dd HH:mm:ss a] (12-hr)
 		//sdf = new SimpleDateFormat("[MMM-dd hh:mm:ssa]");
+		
 		// ArrayList for the Client list
 		clientList = new ArrayList<ClientThread>();
 	}

@@ -260,9 +260,11 @@ public class Client  {
 				client.sendMessage(new PacketHandler(PacketHandler.MESSAGE, msg));
 			}
 		}
+		
 		// disconnect
 		client.disconnect();
 		System.out.println("Disconnected from server. Type /connect to reconnect or /quit to exit.");
+		
 		// allow user to reconnect via this command ONLY if they aren't connected
 		String msg = scan.nextLine();
 		if (msg.startsWith("/connect")) {
@@ -309,11 +311,11 @@ public class Client  {
 	 * if we have a GUI or simply System.out.println() it in console mode
 	 */
 	class ListenFromServer extends Thread {
-
 		public void run() {
 			while(true) {
 				try {
 					String msg = (String) sInput.readObject();
+					
 					// if console mode print the message and add back the prompt
 					if(isGUI == null) {
 						System.out.println(msg);
