@@ -162,6 +162,7 @@ public class Client  {
 	 * > java Client username
 	 * > java Client username portNumber
 	 * > java Client username portNumber serverAddress
+	 * > java Client username portNumber serverAddress password
 	 * at the console prompt
 	 * If the portNumber is not specified 1500 is used
 	 * If the serverAddress is not specified "localHost" is used
@@ -235,7 +236,7 @@ public class Client  {
 		while (true) {
 			//System.out.print("> ");	// what the line appears like to the user in no-gui mode
 			// read message from user
-			String msg = scan.nextLine();
+			String msg = scan.nextLine().trim();
 			
 			// These act as client-sided commands for the text-only client
 			if (msg.equalsIgnoreCase("/commands")) {
