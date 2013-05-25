@@ -29,7 +29,7 @@ public class CommandHandler {
 		    if(!command.startsWith("account")) {
 		        Server.display(username + " issued command: " + command);
 		    } else if (command.startsWith("account")) {
-		        Server.display(username + " issued command: " + command.substring(0, 17) + " ******");
+		        Server.display(username + " issued command: " + command.substring(0, 16) + " ******");
 		    }
 			
 			int userRights = 0;
@@ -50,6 +50,18 @@ public class CommandHandler {
 				// Usage: /me <action>
 				// Effect: Outputs given message as " * <Name> says hello"
 				Server.broadcast("* " + username + " " + command.substring(3));
+			}
+			else if (command.equalsIgnoreCase("help") && !username.equalsIgnoreCase("console")) {
+			    String usableCmds = "/help, /me, /motd, /nick, /account, /msg";
+			    
+			    if (userRights > 1) {
+			        usableCmds += ", /mode";
+			    }
+			    if (userRights > 2) {
+			        usableCmds += ", /reload, /stop";
+			    }
+			    
+			    sendMessage("Available commands: " + usableCmds);
 			}
 			else if (command.equalsIgnoreCase("motd")) {
 			    // Usage: /motd
@@ -122,6 +134,8 @@ public class CommandHandler {
                         // TODO: Require old password before changing?
                         sendMessage("Your password has been changed successfully.");
                     }
+				} else {
+				    sendMessage("Invalid /account action. Valid actions are: register, password");
 				}
 			}
 			else if (command.startsWith("say") && userRights == 4) {
@@ -162,25 +176,34 @@ public class CommandHandler {
 						PermissionsHandler.addPermission("ban", mode.substring(3).toLowerCase());
 					else if(mode.startsWith("-b"))	// unban (temporary)
 						PermissionsHandler.lstBanned.remove(mode.substring(3).toLowerCase());
+					else
+					    sendMessage("Invalid mode. Valid modes: m, o, v, b");
 					
 					if(userRights > 2) {	// administrator modes
 						if(mode.startsWith("+O"))	// permaop
 							PermissionsHandler.addPermission("op", mode.substring(3));
 						else if(mode.startsWith("+V"))	// permavoice
 							PermissionsHandler.addPermission("voice", mode.substring(3));
+		                else
+		                    sendMessage("Invalid mode. Valid modes: m, o, v, b, O, V");
 					}
 					
 					if(userRights == 4)	// console-only modes
 						if(mode.startsWith("+A"))	// make a user an administrator
 							PermissionsHandler.addPermission("admin", mode.substring(3));
+						else
+			                sendMessage("Invalid mode. Valid modes: m, o, v, b, O, V, A");
 					
 					Server.broadcast(username + " sets mode: " + mode);
+				} else {
+				    sendMessage("You must be an operator to use /mode.");
 				}
 			}
 			else if (command.equalsIgnoreCase("reload") && userRights > 2) {
 				// Usage: /reload
 				// Effect: Reloads server permissions
 				PermissionsHandler.initPermissions();
+				sendMessage("Permissions reloaded.");
 			}
 			else if (command.startsWith("msg")) {
 			    // Usage: /msg <recipient> <message>

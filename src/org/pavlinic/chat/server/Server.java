@@ -299,7 +299,7 @@ public class Server {
 				// read the username, password, and version of the client
 				username = (String) sInput.readObject();
 				password = (String) sInput.readObject();
-				cVersion = (int) sInput.readObject();
+				cVersion = (int) sInput.readObject();   // TODO: fix issue here when compiling on JDK 1.6
 				
 				// Do some preliminary checks
 				if(!LoginHandler.isValidVersion(cVersion, minClientVer)) {    // client version check
@@ -427,6 +427,7 @@ public class Server {
         					    }
         					    else {
         					        // TODO: Allow banned users to use /msg to query an operator about their ban (maybe)
+        					        writeMsg("Cannot send message to channel: you are banned\n");
         					        display(username + " tried sending message/command while banned: " + message);
         					    }
         					    

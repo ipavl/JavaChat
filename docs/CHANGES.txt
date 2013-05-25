@@ -34,6 +34,10 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[10:26PM 5/24/2013]
+	- added /help and feedback to some commands
+[7:59PM 5/18/2013]
+	- user is now informed that they are banned when they attempt to send a message to the channel
 [10:44PM 5/16/2013]
 	- file and directory I/O is now more friendly towards non-Windows platforms
 [8:12PM 5/13/2013]
