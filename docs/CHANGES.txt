@@ -34,6 +34,8 @@ CLIENT
 	- client will no longer send blank messages
 
 SERVER
+[11:43PM 5/24/2013]
+	- sendMessage in CommandHandler now correctly distingiushes between users and the console
 [10:26PM 5/24/2013]
 	- added /help and feedback to some commands
 [7:59PM 5/18/2013]

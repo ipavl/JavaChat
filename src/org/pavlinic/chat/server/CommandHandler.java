@@ -20,7 +20,13 @@ import org.pavlinic.chat.server.Server.ClientThread;
 public class CommandHandler {
 	
 	static void sendMessage(String msg) {
-		((ClientThread) Server.ClientThread.currentThread()).writeMsg(msg + "\n");
+	    String username = Server.ClientThread.currentThread().getName();
+	    
+		if(!username.equalsIgnoreCase("console")) {
+			((ClientThread) Server.ClientThread.currentThread()).writeMsg(msg + "\n");
+		} else {
+			Server.display(msg);
+		}
 	}
 	
 	public static void processCommand(String username, String command) {
@@ -51,22 +57,29 @@ public class CommandHandler {
 				// Effect: Outputs given message as " * <Name> says hello"
 				Server.broadcast("* " + username + " " + command.substring(3));
 			}
-			else if (command.equalsIgnoreCase("help") && !username.equalsIgnoreCase("console")) {
-			    String usableCmds = "/help, /me, /motd, /nick, /account, /msg";
-			    
-			    if (userRights > 1) {
-			        usableCmds += ", /mode";
+			else if (command.equalsIgnoreCase("help")) {
+			    if(username.equalsIgnoreCase("console")) {
+			        sendMessage("Usable commands: /help, /me, /msg, /reload, /stop, /mode");
+			    } else {
+    			    String usableCmds = "/help, /me, /motd, /nick, /account, /msg";
+    			    
+    			    if (userRights > 1) {
+    			        usableCmds += ", /mode";
+    			    }
+    			    if (userRights > 2) {
+    			        usableCmds += ", /reload, /stop";
+    			    }
+    			    
+    			    sendMessage("Available commands: " + usableCmds);
 			    }
-			    if (userRights > 2) {
-			        usableCmds += ", /reload, /stop";
-			    }
-			    
-			    sendMessage("Available commands: " + usableCmds);
 			}
 			else if (command.equalsIgnoreCase("motd")) {
 			    // Usage: /motd
 			    // Effect: Shows the user the message of the day
-			    sendMessage(LoginHandler.getMOTD());
+			    if(username.equalsIgnoreCase("console"))
+			        Server.display(LoginHandler.getMOTD());
+			    else
+			        sendMessage(LoginHandler.getMOTD());
 			}
 			else if (command.startsWith("nick") && !username.equalsIgnoreCase("console")) {
 				// Usage: /nick <name>
@@ -243,11 +256,7 @@ public class CommandHandler {
 				}
 			}
 			else {
-			    // TODO: Make this a single function (i.e. make sendMessage interpret rank, and have this listed as one operation)
-			    if (userRights == 4)
-			        Server.display("Unknown command. Type /help for a list of commands.");
-			    else
-			        sendMessage("Unknown command. Type /help for a list of commands.");
+			    sendMessage("Unknown command. Type /help for a list of commands.");
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
