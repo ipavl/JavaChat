@@ -299,7 +299,7 @@ public class Server {
 				// read the username, password, and version of the client
 				username = (String) sInput.readObject();
 				password = (String) sInput.readObject();
-				cVersion = (int) sInput.readObject();   // TODO: fix issue here when compiling on JDK 1.6
+				//cVersion = (int) sInput.readObject();   // TODO: fix issue here when compiling on JDK 1.6
 				
 				// Do some preliminary checks
 				if(!LoginHandler.isValidVersion(cVersion, minClientVer)) {    // client version check
