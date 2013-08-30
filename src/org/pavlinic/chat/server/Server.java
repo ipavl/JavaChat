@@ -16,8 +16,8 @@ import java.util.*;
 import org.pavlinic.chat.PacketHandler;
 
 public class Server {
-	static String sVersion = "91";
-	static String compileDate = "May 24, 2013";
+	static String sVersion = "92";
+	static String compileDate = "August 29, 2013";
 	
 	static int minClientVer = 70;     // the minimum version clients must be running to connect
 	
@@ -102,6 +102,10 @@ public class Server {
 		{
 			// the socket used by the server
 			ServerSocket serverSocket = new ServerSocket(port);
+			
+			display("Starting JChat server on port " + port + ".");
+			display("Version " + sVersion + " compiled on " + compileDate + ".");
+			display("Source code: https://www.github.com/ipavl/javachat");
 			
 			// load permissions
 			PermissionsHandler.initPermissions();
@@ -299,7 +303,7 @@ public class Server {
 				// read the username, password, and version of the client
 				username = (String) sInput.readObject();
 				password = (String) sInput.readObject();
-				//cVersion = (int) sInput.readObject();   // TODO: fix issue here when compiling on JDK 1.6
+				cVersion = (int) sInput.readObject();   // TODO: fix issue here when compiling on JDK 1.6
 				
 				// Do some preliminary checks
 				if(!LoginHandler.isValidVersion(cVersion, minClientVer)) {    // client version check
