@@ -117,10 +117,6 @@ public class Server {
 			// the socket used by the server
 			ServerSocket serverSocket = new ServerSocket(port);
 			
-			display("Starting JChat server on port " + port + ".");
-			display("Version " + sVersion + " compiled on " + compileDate + ".");
-			display("Source code: https://www.github.com/ipavl/javachat");
-			
 			// load permissions
 			PermissionsHandler.initPermissions();
 			
@@ -263,6 +259,9 @@ public class Server {
 		
 		// create a server object and start it
 		Server server = new Server(portNumber);
+		display("Starting JChat server on port " + port + ".");
+		display("Version " + sVersion + " compiled on " + compileDate + ".");
+		display("Source code: https://www.github.com/ipavl/javachat");
 		server.start();
 	}
 

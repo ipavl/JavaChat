@@ -31,7 +31,8 @@ import org.pavlinic.chat.PacketHandler;
 
 public class Client  {
 
-    private static int clientVer = 77;      // the client version
+    private static int clientVer = 78;      // the client version
+	private static String compileDate = "August 29, 2013";
     
 	// for I/O
 	private ObjectInputStream sInput;		// to read from the socket
@@ -74,7 +75,7 @@ public class Client  {
 	/*
 	 * To start the connection
 	 */
-	public boolean start() {
+	public boolean start() {	
 		// try to connect to the server
 		display("Connecting to server...");
 		try {
@@ -236,6 +237,10 @@ public class Client  {
 				System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress] [password]");
 			return;
 		}
+		
+		System.out.println("Starting JChat client.");
+		System.out.println("Version " + clientVer + " compiled on " + compileDate + ".");
+		System.out.println("Source code: https://www.github.com/ipavl/javachat");
 		
 		// create the Client object
 		Client client = new Client(serverAddress, portNumber, userName, password, getClientVer());
