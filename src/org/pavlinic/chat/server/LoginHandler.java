@@ -38,7 +38,7 @@ public class LoginHandler {
         else
             return false;
     }
-    
+
     /*
      * This function will check to see if a name is valid.
      */
@@ -46,13 +46,13 @@ public class LoginHandler {
         if (username.equalsIgnoreCase("console") || username.contains("@") || username.contains("+") ||  
                 username.contains("&") || username.contains("~") || username.contains("#") || 
                 username.length() > 16) {
-            
+
             return false;
         } else {
             return true;
         }
     }
-    
+
     /*
      * This function will return whether or not a name is in use at the moment.
      */
@@ -66,7 +66,7 @@ public class LoginHandler {
         }
         return true;
     }
-    
+
     /*
      * This function will return an integer value based on if the user has successfully authenticated.
      * 
@@ -98,7 +98,7 @@ public class LoginHandler {
             return -1;
         }
     }
-    
+
     /*
      * This function will return the MOTD.
      */
@@ -106,12 +106,12 @@ public class LoginHandler {
         BufferedReader br = new BufferedReader(new FileReader("data" + File.separator + "motd.txt"));
         String line;
         StringBuilder motd = new StringBuilder();
-        
+
         while ((line = br.readLine()) != null) {
             motd.append("[Notice] " + line + "\n" + Server.dateFormat.format(new Date()) + " ").toString();
         }
         br.close();
-        
+
         return motd.toString().trim() + " End of MOTD.\n";
     }
 }
